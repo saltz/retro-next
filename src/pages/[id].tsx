@@ -3,24 +3,22 @@ import {useRouter} from "next/router";
 import {useEffect} from "react";
 import {IState, useStoreActions, useStoreState} from "../store";
 import {Actions, State} from "easy-peasy";
-import {PageSpinner} from "../components/PageSpinner";
+import {PageSpinner} from "../components/shared/PageSpinner";
 import {Button, Result} from "antd";
-import {AppLayout} from "../layouts/AppLayout";
+import {AppLayout} from "../components/layouts/AppLayout";
+import {Column} from "../components/Column";
+import firebase from "../utils/firebaseClient";
+import {useCollectionDataOnce, useDocumentDataOnce} from "react-firebase-hooks/firestore";
+import {Board} from "../models/Board";
+
 
 const BoardPage: NextPage = () => {
     const router = useRouter();
-    const {id} = router.query;
+    const {id = "temp"} = router.query;
 
-    const getBoard = useStoreActions((actions: Actions<IState>) => actions.boardState.getById);
-    const loading = useStoreState((state: State<IState>) => state.boardState.getByIdLoading);
-    const done = useStoreState((state: State<IState>) => state.boardState.getByIdDone);
-    const board = useStoreState((state: State<IState>) => state.boardState.single);
+    const [board, loading, error] = useDocumentDataOnce<Board>(firebase.firestore().collection("boards").doc(id as string));
 
-    useEffect(() => {
-        getBoard(id as string);
-    }, [id]);
-
-    if (!loading && !board && done) {
+    if (!loading && !board && error) {
         return <AppLayout>
             <Result
                 status="404"
@@ -31,7 +29,9 @@ const BoardPage: NextPage = () => {
         </AppLayout>
     }
 
-    return !loading && board ? <h1>{board.name}</h1> : <PageSpinner/>;
+    return !loading && board && id !== "temp" ? <div>
+        <Column id={id as string}/>
+    </div>: <PageSpinner/>;
 
 };
 

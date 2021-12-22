@@ -109,8 +109,6 @@ export const crud = <TEntity extends IEntity>(entityName: string, path: string):
         actions.setCreateLoading(true);
         actions.setCreateDone(false);
 
-        console.log("h1")
-
         const response = await fetch(path, {
             method: "POST",
             headers: {

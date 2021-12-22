@@ -1,13 +1,11 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {SubmitHandler} from "react-hook-form";
-import {InputControl} from "../form/controls/InputControl";
-import {FormBase} from "../form/FormBase";
-import {Button} from "antd";
+import {InputControl} from "./form/controls/InputControl";
+import {FormBase} from "./form/FormBase";
 import {object, string} from "yup";
-import {IState, useStoreActions, useStoreState} from "../store";
-import {Actions, State} from "easy-peasy";
-import {Board} from "../models/Board";
 import {useRouter} from "next/router";
+import firebase from "../utils/firebaseClient";
+import * as uuid from "uuid";
 
 type CreateBoardForm = {
     name: string
@@ -19,19 +17,16 @@ const schema = object({
 
 export const CreateBoardForm: React.FC = () => {
     const router = useRouter();
-    const createBoard = useStoreActions((actions: Actions<IState>) => actions.boardState.create);
-    const board = useStoreState((state: State<IState>) => state.boardState.single);
-    const createBoardDone = useStoreState((state: State<IState>) => state.boardState.createDone);
 
-    const onSubmit: SubmitHandler<CreateBoardForm> = data => {
-        createBoard(new Board(data.name));
+    const onSubmit: SubmitHandler<CreateBoardForm> = async ({ name }) => {
+        const board = {
+            id: uuid.v4(),
+            name,
+        };
+
+        const document = await firebase.firestore().collection("boards").add(board);
+        await router.push(`/${document.id}`)
     };
-
-    useEffect(() => {
-        if (board && createBoardDone) {
-            router.push(`/${board.id}`);
-        }
-    }, [board, createBoardDone]);
 
     return (
         <FormBase<CreateBoardForm>

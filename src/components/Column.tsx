@@ -1,17 +1,44 @@
-import React, {useEffect} from "react";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import {IState, useStoreActions, useStoreState} from "../store";
-import {Item} from "./Item";
-import {Actions} from "easy-peasy";
+import React from "react";
+import {DragDropContext, Droppable} from "react-beautiful-dnd";
+import {Item as ItemModel} from "../models/item";
+import {Button} from "antd";
+import firebase from "../utils/firebaseClient";
+import {useCollectionData, useDocumentData} from "react-firebase-hooks/firestore";
+import {PageSpinner} from "./shared/PageSpinner";
 
-const Column: React.FC = () => {
+interface IProps {
+    id: string;
+}
+
+
+export const Column: React.FC<IProps> = (props: IProps) => {
+    const query = firebase.firestore().collection("boards").doc(props.id).collection("items");
+
+    const [items, itemsLoading, itemsError] = useCollectionData<ItemModel>(query);
+
+    if (itemsLoading || !items) {
+        return <PageSpinner/>
+    }
+
+    const addItem = () => {
+        query.add({
+            title: "new"
+        });
+    }
+
     return (
-        <Droppable droppableId={"1"}>
-            {() => (
-                <div>
-                    {items.map((item) => <Item key={item} item={item}/>)}
-                </div>
-            )}
-        </Droppable>
+        <div>
+            <h1>column header</h1>
+            <DragDropContext onDragEnd={() => console.log}>
+                <Droppable droppableId={props.id}>
+                    {(provider, snapshot) => (
+                        <div>
+                            {items.map((item) => <h1>{item.title}</h1>)}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
+            <Button onClick={() => addItem()}> click </Button>
+        </div>
     );
 }

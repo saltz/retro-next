@@ -1,25 +1,10 @@
 import {NextPage} from "next";
-import {AppLayout} from "../layouts/AppLayout";
-import {Button, Card, Col, Divider, Row, Typography} from "antd";
+import {AppLayout} from "../components/layouts/AppLayout";
+import {Card, Col, Divider, Row} from "antd";
 import {JoinBoardForm} from "../components/JoinBoardForm";
 import {CreateBoardForm} from "../components/CreateBoardForm";
-import {useChannel} from "../hooks/useChannel";
-import {useState} from "react";
-import {Types} from "ably";
-import {Board} from "../models/Board";
 import {GradientHeader} from "../components/GradientHeader";
-
 const Index: NextPage = (): JSX.Element => {
-    const [messages, setMessasges] = useState<string[]>([]);
-
-    const [channel, ably] = useChannel<Board>("boards", (message) => {
-        console.log("callback", message);
-        setMessasges([
-            ...messages,
-            message.data.name,
-        ]);
-    });
-
     return (
         <>
             <AppLayout>

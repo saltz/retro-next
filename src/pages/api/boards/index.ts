@@ -3,12 +3,10 @@ import {Board} from "../../../models/Board";
 import {boards} from "../../../apiStore";
 import * as uuid from "uuid";
 import {generateKey} from "../../../utils/keyGenerator";
-import Ably from "ably/promises";
 
 interface BoardRequest extends NextApiRequest {
     body: Board;
 }
-
 
 const handler: NextApiHandler = (request: BoardRequest, response: NextApiResponse<Board | Board[]>) => {
     const {method, body, query} = request;
@@ -29,7 +27,9 @@ const handler: NextApiHandler = (request: BoardRequest, response: NextApiRespons
         case "POST":
             body.id = uuid.v4();
             body.key = generateKey(10);
-            boards.push(body)
+
+            boards.push(body);
+
             response.status(201).json(body);
             break;
         default:
