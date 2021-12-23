@@ -75,7 +75,9 @@ export const Column: React.FC<IProps> = (props: IProps) => {
                     <Col span={24} style={{padding: "10px"}}>
                         <ItemTextArea
                             onPressEnter={(value) => {
-                                query.add(new ItemDocument(props.header, items?.docs?.length ?? 0, currentUser, value));
+                                if (value) {
+                                    query.add(new ItemDocument(props.header, items?.docs?.length ?? 0, currentUser, value));
+                                }
                             }}
                         />
                     </Col>
