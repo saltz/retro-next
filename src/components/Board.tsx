@@ -1,37 +1,92 @@
 import React from "react";
 import {BoardDocument} from "../models/BoardDocument";
-import {Avatar, Col, Divider, Row, Typography} from "antd";
-import {UserAvatar} from "./shared/UserAvatar";
+import {Col, Divider, Row, Typography} from "antd";
 import {CurrentUsers} from "./board/CurrentUsers";
 import {Column} from "./Column";
+import {useCollectionData} from "react-firebase-hooks/firestore";
+import {VoteDocument} from "../models/VoteDocument";
+import firebase from "../utils/firebaseClient";
+import {DragDropContext, Droppable, DropResult} from "react-beautiful-dnd";
 
 interface IProps {
     id: string;
     board: BoardDocument;
 }
 
+interface IVoteContext {
+    currentVotes: VoteDocument[];
+    maximumAmountOfVotes: number;
+}
+
+export const VoteContext = React.createContext<IVoteContext>({
+    currentVotes: [],
+    maximumAmountOfVotes: 0,
+});
+
 export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
+    const currentUser = firebase.auth().currentUser;
+    const query = firebase
+        .firestore()
+        .collection("boards")
+        .doc(props.id);
+
+    const [currentVotes] = useCollectionData<VoteDocument>(
+        query
+            .collection("votes")
+            .where("userId", "==", currentUser.uid)
+    );
+
+    const onDragEnd = (result: DropResult) => {
+        console.log(result);
+        if (result.destination) {
+            query
+                .collection("items")
+                .doc(result.draggableId)
+                .update({header: result.destination.droppableId, index: result.destination.index});
+        }
+    };
 
     return (
-        <div style={{ padding: "0 30px 0"}}>
-            <Row justify="center">
-                <Typography.Title style={{ marginTop: "30px"}}>{props.board.name}</Typography.Title>
-            </Row>
-            <Divider/>
-            <Row justify="center" style={{ marginBottom: "20px"}}>
-                <CurrentUsers boardId={props.id}/>
-            </Row>
-            <Row justify="center" gutter={[32, 0]}>
-                <Col lg={8}>
-                    <Column boardId={props.id} header="Went well"/>
-                </Col>
-                <Col lg={8}>
-                    <Column boardId={props.id} header="To improve"/>
-                </Col>
-                <Col lg={8}>
-                    <Column boardId={props.id} header="Action items"/>
-                </Col>
-            </Row>
-        </div>
+        <VoteContext.Provider
+            value={{
+                currentVotes: currentVotes,
+                maximumAmountOfVotes: props.board.maximumVotes
+            }}
+        >
+            <DragDropContext onDragEnd={onDragEnd}>
+                <div style={{padding: "0 30px 0"}}>
+                    <Row justify="center">
+                        <Typography.Title style={{marginTop: "30px"}}>{props.board.name}</Typography.Title>
+                    </Row>
+                    <Divider/>
+                    <Row justify="center" style={{marginBottom: "20px"}}>
+                        <CurrentUsers boardId={props.id}/>
+                    </Row>
+                    <Row justify="center" gutter={[32, 0]}>
+                        <Col lg={8}>
+                            <Column
+                                boardId={props.id}
+                                board={props.board}
+                                header="Went well"
+                            />
+                        </Col>
+                        <Col lg={8}>
+                            <Column
+                                boardId={props.id}
+                                board={props.board}
+                                header="To improve"
+                            />
+                        </Col>
+                        <Col lg={8}>
+                            <Column
+                                boardId={props.id}
+                                board={props.board}
+                                header="Action items"
+                            />
+                        </Col>
+                    </Row>
+                </div>
+            </DragDropContext>
+        </VoteContext.Provider>
     );
 };

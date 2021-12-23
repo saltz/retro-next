@@ -7,7 +7,7 @@ import {Column} from "../../components/Column";
 import firebase from "../../utils/firebaseClient";
 import {useCollectionData, useDocumentDataOnce} from "react-firebase-hooks/firestore";
 import {BoardDocument, BoardDocumentConverter} from "../../models/BoardDocument";
-import {withAuthentication} from "../../hooks/withAuthentication";
+import {withAuthentication} from "../../components/withAuthentication";
 import {useEffect} from "react";
 import {UserAvatar} from "../../components/shared/UserAvatar";
 import {UserDocument, UserDocumentConverter} from "../../models/UserDocument";
@@ -31,21 +31,21 @@ const BoardPage: NextPage<IProps> = (props: IProps) => {
 
 
     if (!boardLoading && !board) {
-        return <AppLayout>
+        return (
             <Result
                 status="404"
                 title="404"
                 subTitle="BoardDocument not found"
                 extra={<Button type="primary" onClick={() => router.back()}>Go back</Button>}
             />
-        </AppLayout>
+        );
     }
 
     return (
-        <AppLayout>
+        <>
             {boardLoading && !boardError && <PageSpinner/>}
             {board && !boardLoading && <Board id={id} board={board}/>}
-        </AppLayout>
+        </>
     );
 };
 

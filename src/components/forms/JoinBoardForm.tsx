@@ -28,6 +28,7 @@ export const JoinBoardForm: React.FC = () => {
             layout="vertical"
         >
             <InputControl label="Board key" name="key" itemProps={{required: true}}/>
+            <div style={{height: "88px"}}/>
         </FormBase>
     );
 }

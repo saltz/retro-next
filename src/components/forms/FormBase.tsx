@@ -1,4 +1,4 @@
-import {Button, Form} from "antd";
+import {Button, Form, Row} from "antd";
 import {FieldValues, useForm, FormProvider, SubmitHandler} from "react-hook-form";
 import React, {ReactNode} from "react";
 import {ObjectSchema} from "yup";
@@ -22,13 +22,15 @@ export const FormBase = <T extends FieldValues>(props: IProps<T>) => {
         <FormProvider {...methods}>
             <Form onSubmitCapture={methods.handleSubmit(props.onSubmit)} layout={props.layout}>
                 {props.children}
-                <Button
-                    htmlType="submit"
-                    type="primary"
-                    style={{ position: "relative", float: "right", marginTop: "20px"}}
-                >
-                    {props.submitText}
-                </Button>
+                <Row justify="end" align="bottom">
+                    <Button
+                        htmlType="submit"
+                        type="primary"
+                        style={{ marginTop: "20px"}}
+                    >
+                        {props.submitText}
+                    </Button>
+                </Row>
             </Form>
         </FormProvider>
     )

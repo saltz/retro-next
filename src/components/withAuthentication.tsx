@@ -1,9 +1,9 @@
 import React from "react";
 import {useAuthState} from "react-firebase-hooks/auth";
 import firebase from "../utils/firebaseClient";
-import {AppLayout} from "../components/layouts/AppLayout";
-import {PageSpinner} from "../components/shared/PageSpinner";
-import {SignInForm} from "../components/forms/SignInForm";
+import {AppLayout} from "./layouts/AppLayout";
+import {PageSpinner} from "./shared/PageSpinner";
+import {SignInForm} from "./forms/SignInForm";
 import {NextPage} from "next";
 
 interface IProps {

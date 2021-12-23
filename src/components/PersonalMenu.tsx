@@ -36,16 +36,13 @@ export const PersonalMenu: React.FC = (): JSX.Element => {
                 {`
                   .personal-menu {
                     position: fixed;
+                    z-index: 999;
                     top: 30px;
                     right: 30px;
                   }
 
                   .personal-menu:hover {
                     cursor: pointer;
-                  }
-                  
-                  :global(.personal-menu-dropdown) {
-                    top: 85px !important;
                   }
                 `}
             </style>

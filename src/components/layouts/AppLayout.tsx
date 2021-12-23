@@ -14,26 +14,41 @@ export const AppLayout: React.FC<IProps> = (props: IProps): JSX.Element => {
 
     return (
         <>
-            <div className="content">
-                {user && !loading && !error && <PersonalMenu/>}
-                {props.children}
+            <div className="page-container">
+                <div className="content-wrap">
+                    {user && !loading && !error && <PersonalMenu/>}
+                    {props.children}
+                </div>
                 <div className="footer">
-                <span> A simple responsive retrospective app created by <Link href="https://github.com/saltz">Dane Naebers</Link> view source on <Link
-                    href="https://github.com/saltz/retro-next"><GithubOutlined/></Link></span>
+                    <span>
+                        A simple responsive retrospective app created by
+                        <Link href="https://github.com/saltz"> Dane Naebers </Link>
+                        view source on <Link href="https://github.com/saltz/retro-next"><GithubOutlined/></Link>
+                    </span>
                 </div>
             </div>
             <style jsx>
                 {`
+                  .page-container {
+                    position: relative;
+                    min-height: 100vh;
+                  }
+
+                  .content-wrap {
+                    padding-bottom: 100px;
+                  }
+
                   .footer {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                    width: 100%;
+                    align-content: center;
                   }
 
                   .footer > span {
-                    position: fixed;
+                    width: 100%;
+                    position: absolute;
                     bottom: 0;
-                    margin: 12px;
+                    height: 50px;
+                    text-align: center;
                   }
                 `}
             </style>
