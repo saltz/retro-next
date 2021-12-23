@@ -6,7 +6,7 @@ import {Column} from "./Column";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {VoteDocument} from "../models/VoteDocument";
 import firebase from "../utils/firebaseClient";
-import {DragDropContext, Droppable, DropResult} from "react-beautiful-dnd";
+import {DragDropContext, DropResult} from "react-beautiful-dnd";
 
 interface IProps {
     id: string;
@@ -37,7 +37,6 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
     );
 
     const onDragEnd = (result: DropResult) => {
-        console.log(result);
         if (result.destination) {
             query
                 .collection("items")

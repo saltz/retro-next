@@ -95,8 +95,6 @@ export const Item: React.FC<IProps> = (props: IProps) => {
         voteContext.currentVotes?.length === voteContext.maximumAmountOfVotes &&
         !voteContext.currentVotes?.find((i) => i.itemId === props.id);
 
-    console.log(votingDisabled);
-
     return (
         <Draggable draggableId={props.id} index={props.index}>
             {(provider: DraggableProvided, snapshot: DraggableStateSnapshot) => (

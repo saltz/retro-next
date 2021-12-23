@@ -21,7 +21,7 @@ export const CurrentUsers: React.FC<IProps> = (props: IProps): JSX.Element => {
         .collection("users")
         .withConverter(UserDocumentConverter);
 
-    const [users, loading] = useCollectionData(query);
+    const [users, loading] = useCollectionData<UserDocument>(query);
     const currentUser = firebase.auth().currentUser;
 
     const leavingBoard = () => {
@@ -50,7 +50,7 @@ export const CurrentUsers: React.FC<IProps> = (props: IProps): JSX.Element => {
         <Avatar.Group>
             {loading || !users ? (
                 <Skeleton.Avatar active size={50}/>
-            ) : users.map((user) => <UserAvatar size={50} user={user} border tooltip/>)}
+            ) : users.map((user) => <UserAvatar key={user.displayName} size={50} user={user} border tooltip/>)}
         </Avatar.Group>
     );
 };
