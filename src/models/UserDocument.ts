@@ -13,7 +13,11 @@ export class UserDocument {
     }
 }
 
-export const UserDocumentConverter: FirestoreDataConverter<UserDocument> = {
+type UserDocumentConverter = FirestoreDataConverter<UserDocument> & {
+    toUserDocument: (data: any) => UserDocument;
+};
+
+export const UserDocumentConverter: UserDocumentConverter = {
     toFirestore: (user: UserDocument): firebase.firestore.DocumentData => ({
         displayName: user.displayName,
         email: user.email,
@@ -23,5 +27,9 @@ export const UserDocumentConverter: FirestoreDataConverter<UserDocument> = {
         const data = snapshot.data(options);
 
         return new UserDocument(data.displayName, data.email, data.photoURL);
-    }
+    },
+    toUserDocument: (data) => {
+
+        return new UserDocument(data.displayName, data.email, data.photoURL);
+    },
 }

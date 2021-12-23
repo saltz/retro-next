@@ -24,18 +24,18 @@ export const AppLayout: React.FC<IProps> = (props: IProps): JSX.Element => {
             </div>
             <style jsx>
                 {`
-              .footer {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
+                  .footer {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  }
 
-              .footer > span {
-                position: fixed;
-                bottom: 0;
-                margin: 12px;
-              }
-            `}
+                  .footer > span {
+                    position: fixed;
+                    bottom: 0;
+                    margin: 12px;
+                  }
+                `}
             </style>
         </>
     );

@@ -1,9 +1,10 @@
 import * as firebaseui from "firebaseui";
-import firebase from "../utils/firebaseClient";
-import FirebaseAuth from "./FirebaseAuth";
-import "../../node_modules/firebaseui/dist/firebaseui.css";
+import firebase from "../../utils/firebaseClient";
 import {Card, Col, Row} from "antd";
-import {GradientHeader} from "./GradientHeader";
+import {GradientHeader} from "../shared/GradientHeader";
+import React from "react";
+import "firebaseui/dist/firebaseui.css";
+import FirebaseAuth from "../FirebaseAuth";
 
 const config: firebaseui.auth.Config = {
     signInFlow: "popup",

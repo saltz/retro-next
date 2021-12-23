@@ -1,9 +1,9 @@
 import {NextPage} from "next";
 import {AppLayout} from "../components/layouts/AppLayout";
 import {Card, Col, Divider, Row} from "antd";
-import {JoinBoardForm} from "../components/JoinBoardForm";
-import {CreateBoardForm} from "../components/CreateBoardForm";
-import {GradientHeader} from "../components/GradientHeader";
+import {JoinBoardForm} from "../components/forms/JoinBoardForm";
+import {CreateBoardForm} from "../components/forms/CreateBoardForm";
+import {GradientHeader} from "../components/shared/GradientHeader";
 import {withAuthentication} from "../hooks/withAuthentication";
 import firebase from "../utils/firebaseClient";
 

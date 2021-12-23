@@ -27,7 +27,7 @@ export const UserAvatar: React.FC<IProps> = (props: IProps): JSX.Element => {
     };
 
     return (
-        <Tooltip title={props.tooltip ? user.displayName : undefined}>
+        <Tooltip title={props.tooltip ? user.displayName : undefined} placement="bottom">
             <Avatar
                 style={{border: props.border ? "3px solid #00c600" : undefined}}
                 size={props.size}

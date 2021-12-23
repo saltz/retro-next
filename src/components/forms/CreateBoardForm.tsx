@@ -1,11 +1,11 @@
 import React from "react";
 import {SubmitHandler} from "react-hook-form";
-import {InputControl} from "./form/controls/InputControl";
-import {FormBase} from "./form/FormBase";
+import {InputControl} from "./controls/InputControl";
+import {FormBase} from "./FormBase";
 import {object, string} from "yup";
 import {useRouter} from "next/router";
-import firebase from "../utils/firebaseClient";
-import {BoardDocument, BoardDocumentConverter} from "../models/BoardDocument";
+import firebase from "../../utils/firebaseClient";
+import {BoardDocument, BoardDocumentConverter} from "../../models/BoardDocument";
 
 type CreateBoardForm = {
     name: string

@@ -11,6 +11,7 @@ import {withAuthentication} from "../../hooks/withAuthentication";
 import {useEffect} from "react";
 import {UserAvatar} from "../../components/shared/UserAvatar";
 import {UserDocument, UserDocumentConverter} from "../../models/UserDocument";
+import {Board} from "../../components/Board";
 
 interface IProps {
     user: firebase.User;
@@ -18,9 +19,7 @@ interface IProps {
 
 const BoardPage: NextPage<IProps> = (props: IProps) => {
     const router = useRouter();
-    const id = router.query.id ?? "undefined";
-
-    const currentUser = firebase.auth().currentUser;
+    const id: string = router.query.id as string ?? "undefined";
 
     const boardQuery = firebase
         .firestore()
@@ -29,30 +28,7 @@ const BoardPage: NextPage<IProps> = (props: IProps) => {
         .doc(id as string);
 
     const [board, boardLoading, boardError] = useDocumentDataOnce<BoardDocument>(boardQuery);
-    const [users, usersLoading, usersError] = useCollectionData(boardQuery.collection("users"));
 
-    const leavingBoard = () => {
-        boardQuery
-            .collection("users")
-            .doc(currentUser.displayName)
-            .withConverter(UserDocumentConverter)
-            .delete();
-    };
-
-    useEffect(() => {
-        boardQuery
-            .collection("users")
-            .withConverter(UserDocumentConverter)
-            .doc(currentUser.displayName)
-            .set(new UserDocument(currentUser.displayName, currentUser.email, currentUser.photoURL));
-
-        router.events.on("routeChangeStart", leavingBoard);
-        window.onbeforeunload = () => leavingBoard();
-
-        return () => {
-            router.events.off("routeChangeStart", leavingBoard);
-        }
-    }, []);
 
     if (!boardLoading && !board) {
         return <AppLayout>
@@ -68,14 +44,7 @@ const BoardPage: NextPage<IProps> = (props: IProps) => {
     return (
         <AppLayout>
             {boardLoading && !boardError && <PageSpinner/>}
-            {board && !boardLoading && (
-                <>
-                    <Avatar.Group>
-                        {users.map((user) => <UserAvatar size={60} user={user} border tooltip/>)}
-                    </Avatar.Group>
-                    <Column id={id as string}/>
-                </>
-            )}
+            {board && !boardLoading && <Board id={id} board={board}/>}
         </AppLayout>
     );
 };
