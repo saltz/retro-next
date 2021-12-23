@@ -112,21 +112,21 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
                             <Column
                                 boardId={props.id}
                                 board={props.board}
-                                header="Went well"
+                                header="What went well 👏"
                             />
                         </Col>
                         <Col lg={8}>
                             <Column
                                 boardId={props.id}
                                 board={props.board}
-                                header="To improve"
+                                header="Things to improve 🔨"
                             />
                         </Col>
                         <Col lg={8}>
                             <Column
                                 boardId={props.id}
                                 board={props.board}
-                                header="Action items"
+                                header="Action items 📋"
                             />
                         </Col>
                     </Row>
