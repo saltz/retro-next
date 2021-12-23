@@ -99,10 +99,9 @@ export const Item: React.FC<IProps> = (props: IProps) => {
         <Draggable draggableId={props.id} index={props.index}>
             {(provider: DraggableProvided, snapshot: DraggableStateSnapshot) => (
                 <div ref={provider.innerRef} {...provider.draggableProps}>
-                    <Card style={{margin: "10px"}} loading={snapshot.isDragging}>
+                    <Card style={{margin: "10px"}} loading={snapshot.isDragging} {...provider.dragHandleProps}>
                         <Row justify="space-between">
                             <Card.Meta avatar={<UserAvatar size={35} user={props.item.user} tooltip tooltipPlacement="right"/>}/>
-                            <HolderOutlined {...provider.dragHandleProps} />
                             <Space size={10}>
                                 <Tag color={getVotesColor()}>
                                     {props.item.votes > 0 && "+"}
