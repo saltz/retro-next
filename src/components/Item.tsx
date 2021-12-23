@@ -1,5 +1,5 @@
-import React, {useContext, useState} from "react";
-import {ItemDocument} from "../models/ItemDocument";
+import React, {CSSProperties, useContext, useState} from "react";
+import {ItemDocument, ItemDocumentConverter} from "../models/ItemDocument";
 import {
     Card,
     Popconfirm,
@@ -10,13 +10,27 @@ import {
     Tag, Tooltip
 } from "antd";
 import {UserAvatar} from "./shared/UserAvatar";
-import {DeleteOutlined, DislikeOutlined, EditOutlined, HolderOutlined, LikeOutlined} from "@ant-design/icons";
+import {
+    DeleteOutlined,
+    DislikeOutlined,
+    EditOutlined,
+    HolderOutlined,
+    LikeOutlined,
+    RollbackOutlined
+} from "@ant-design/icons";
 import firebase from "../utils/firebaseClient";
 import {ItemTextArea} from "./shared/ItemTextArea";
 import {useDocumentData} from "react-firebase-hooks/firestore";
 import {VoteDocument, VoteDocumentConverter} from "../models/VoteDocument";
 import {VoteContext} from "./Board";
-import {Draggable, DraggableProvided, DraggableStateSnapshot} from "react-beautiful-dnd";
+import {
+    Draggable,
+    DraggableProvided, DraggableProvidedDragHandleProps,
+    DraggableStateSnapshot,
+    Droppable,
+    DroppableProvided,
+    DroppableStateSnapshot
+} from "react-beautiful-dnd";
 
 interface IProps {
     id: string;
@@ -95,67 +109,180 @@ export const Item: React.FC<IProps> = (props: IProps) => {
         voteContext.currentVotes?.length === voteContext.maximumAmountOfVotes &&
         !voteContext.currentVotes?.find((i) => i.itemId === props.id);
 
+    interface IItemCardProps {
+        item: ItemDocument;
+        itemQuery: firebase.firestore.CollectionReference<ItemDocument>;
+        id?: string;
+        style?: CSSProperties;
+        loading?: boolean;
+        draggableProps?: DraggableProvidedDragHandleProps;
+    }
+
+    const removeFromParentItem = async (item: ItemDocument) => {
+        await props.itemQuery.doc(item.parentId).update({
+            children: firebase.firestore.FieldValue.arrayRemove(ItemDocumentConverter.toFirestore(item)),
+        });
+
+        await props.itemQuery.doc(item.id).update({ header: props.item.header });
+    };
+
+    const ItemCard = (props: IItemCardProps) => (
+        <Card style={{margin: "10px", ...props.style}} {...props.draggableProps}>
+            <Row justify="space-between">
+                <Card.Meta
+                    avatar={<UserAvatar size={35} user={props.item.user} tooltip tooltipPlacement="right"/>}
+                />
+                {props.id ? (
+                    <Space size={10}>
+                        <Tag color={getVotesColor()}>
+                            {props.item.votes > 0 && "+"}
+                            {props.item.votes}
+                        </Tag>
+                        <EditOutlined style={{cursor: "pointer"}}
+                                      onClick={() => setEditing(!editing)}/>
+                        <Popconfirm
+                            title="Are you sure you want to delete this item?"
+                            onConfirm={deleteItem}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <DeleteOutlined style={{color: "#df4040"}}/>
+                        </Popconfirm>
+                    </Space>
+                ) : (
+                    <Popconfirm
+                        title="Are you sure you want to unstack this item?"
+                        onConfirm={() => removeFromParentItem(props.item)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <RollbackOutlined />
+                    </Popconfirm>
+                )}
+            </Row>
+            <Row justify="center" style={{margin: "20px 32px 0 0"}}>
+                {editing && props.id ? (
+                    <ItemTextArea
+                        onPressEnter={(value) => {
+                            if (value) {
+                                props.itemQuery.doc(props.id).update({content: value});
+                            }
+                            setEditing(false);
+                        }}
+                        defaultValue={props.item.content}
+                        margin="30px"
+                    />
+                ) : <p>{props.item.content}</p>}
+            </Row>
+            {props.item.children?.length > 0 && props.item.children.map((childItem, index) => (
+                <ItemCard key={index} item={childItem} itemQuery={props.itemQuery}/>
+            ))}
+            {props.id && (
+                <Row justify="end">
+                    <Tooltip
+                        title={votingDisabled() ? `You can no longer vote, you have already voted ${voteContext.maximumAmountOfVotes} times` : undefined}>
+                        <Radio.Group
+                            disabled={votingDisabled()}
+                            options={[
+                                {
+                                    label: <LikeOutlined/>,
+                                    value: "upvote"
+                                },
+                                {
+                                    label: <DislikeOutlined/>,
+                                    value: "downvote"
+                                }
+                            ]}
+                            optionType="button"
+                            value={currentVote?.state}
+                            onChange={vote}
+                        />
+                    </Tooltip>
+                </Row>
+            )}
+        </Card>
+    );
+
     return (
         <Draggable draggableId={props.id} index={props.index}>
             {(provider: DraggableProvided, snapshot: DraggableStateSnapshot) => (
                 <div ref={provider.innerRef} {...provider.draggableProps}>
-                    <Card style={{margin: "10px"}} loading={snapshot.isDragging} {...provider.dragHandleProps}>
-                        <Row justify="space-between">
-                            <Card.Meta avatar={<UserAvatar size={35} user={props.item.user} tooltip tooltipPlacement="right"/>}/>
-                            <Space size={10}>
-                                <Tag color={getVotesColor()}>
-                                    {props.item.votes > 0 && "+"}
-                                    {props.item.votes}
-                                </Tag>
-                                <EditOutlined style={{cursor: "pointer"}} onClick={() => setEditing(!editing)}/>
-                                <Popconfirm
-                                    title="Are you sure to delete this item?"
-                                    onConfirm={deleteItem}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    <DeleteOutlined style={{color: "#df4040"}}/>
-                                </Popconfirm>
-                            </Space>
-
-                        </Row>
-                        <Row justify="center" style={{ margin: "20px 32px 0 0"}}>
-                            {editing ? (
-                                <ItemTextArea
-                                    onPressEnter={(value) => {
-                                        if (value) {
-                                            props.itemQuery.doc(props.id).update({content: value});
-                                        }
-                                        setEditing(false);
-                                    }}
-                                    defaultValue={props.item.content}
-                                    margin="30px"
-                                />
-                            ) : <p>{props.item.content}</p>}
-                        </Row>
-                        <Row justify="end">
-                            <Tooltip title={votingDisabled() ? `You can no longer vote, you have already voted ${voteContext.maximumAmountOfVotes} times` : undefined}>
-                                <Radio.Group
-                                    disabled={votingDisabled()}
-                                    options={[
-                                        {
-                                            label: <LikeOutlined/>,
-                                            value: "upvote"
-                                        },
-                                        {
-                                            label: <DislikeOutlined/>,
-                                            value: "downvote"
-                                        }
-                                    ]}
-                                    optionType="button"
-                                    value={currentVote?.state}
-                                    onChange={vote}
-                                />
-                            </Tooltip>
-                        </Row>
-                    </Card>
+                    <ItemCard
+                        id={props.id}
+                        item={props.item}
+                        itemQuery={props.itemQuery}
+                        style={{backgroundColor: !!snapshot.combineTargetFor ? "#7058ff05" : ""}}
+                        loading={snapshot.isDragging}
+                        draggableProps={provider.dragHandleProps}
+                    />
+                    {/*<Card style={{margin: "10px", backgroundColor: !!snapshot.combineTargetFor ? "#7058ff05" : ""}} loading={snapshot.isDragging} {...provider.dragHandleProps}>*/}
+                    {/*    <Row justify="space-between">*/}
+                    {/*        <Card.Meta*/}
+                    {/*            avatar={<UserAvatar size={35} user={props.item.user} tooltip*/}
+                    {/*                                tooltipPlacement="right"/>}*/}
+                    {/*        />*/}
+                    {/*        <Space size={10}>*/}
+                    {/*            <Tag color={getVotesColor()}>*/}
+                    {/*                {props.item.votes > 0 && "+"}*/}
+                    {/*                {props.item.votes}*/}
+                    {/*            </Tag>*/}
+                    {/*            <EditOutlined style={{cursor: "pointer"}}*/}
+                    {/*                          onClick={() => setEditing(!editing)}/>*/}
+                    {/*            <Popconfirm*/}
+                    {/*                title="Are you sure to delete this item?"*/}
+                    {/*                onConfirm={deleteItem}*/}
+                    {/*                okText="Yes"*/}
+                    {/*                cancelText="No"*/}
+                    {/*            >*/}
+                    {/*                <DeleteOutlined style={{color: "#df4040"}}/>*/}
+                    {/*            </Popconfirm>*/}
+                    {/*        </Space>*/}
+                    {/*    </Row>*/}
+                    {/*    <Row justify="center" style={{margin: "20px 32px 0 0"}}>*/}
+                    {/*        {editing ? (*/}
+                    {/*            <ItemTextArea*/}
+                    {/*                onPressEnter={(value) => {*/}
+                    {/*                    if (value) {*/}
+                    {/*                        props.itemQuery.doc(props.id).update({content: value});*/}
+                    {/*                    }*/}
+                    {/*                    setEditing(false);*/}
+                    {/*                }}*/}
+                    {/*                defaultValue={props.item.content}*/}
+                    {/*                margin="30px"*/}
+                    {/*            />*/}
+                    {/*        ) : <p>{props.item.content}</p>}*/}
+                    {/*    </Row>*/}
+                    {/*    {props.item.children?.length > 0 && props.item.children.map((childItem) => (*/}
+                    {/*        <Row>*/}
+                    {/*            <Card>*/}
+                    {/*                {childItem.content}*/}
+                    {/*            </Card>*/}
+                    {/*        </Row>*/}
+                    {/*    ))}*/}
+                    {/*    <Row justify="end">*/}
+                    {/*        <Tooltip*/}
+                    {/*            title={votingDisabled() ? `You can no longer vote, you have already voted ${voteContext.maximumAmountOfVotes} times` : undefined}>*/}
+                    {/*            <Radio.Group*/}
+                    {/*                disabled={votingDisabled()}*/}
+                    {/*                options={[*/}
+                    {/*                    {*/}
+                    {/*                        label: <LikeOutlined/>,*/}
+                    {/*                        value: "upvote"*/}
+                    {/*                    },*/}
+                    {/*                    {*/}
+                    {/*                        label: <DislikeOutlined/>,*/}
+                    {/*                        value: "downvote"*/}
+                    {/*                    }*/}
+                    {/*                ]}*/}
+                    {/*                optionType="button"*/}
+                    {/*                value={currentVote?.state}*/}
+                    {/*                onChange={vote}*/}
+                    {/*            />*/}
+                    {/*        </Tooltip>*/}
+                    {/*    </Row>*/}
+                    {/*</Card>*/}
                 </div>
             )}
         </Draggable>
-    )
+    );
 }

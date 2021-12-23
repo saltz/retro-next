@@ -7,6 +7,7 @@ import {useCollectionData} from "react-firebase-hooks/firestore";
 import {VoteDocument} from "../models/VoteDocument";
 import firebase from "../utils/firebaseClient";
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
+import {ItemDocumentConverter} from "../models/ItemDocument";
 
 interface IProps {
     id: string;
@@ -36,9 +37,26 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
             .where("userId", "==", currentUser.uid)
     );
 
-    const onDragEnd = (result: DropResult) => {
+    const onDragEnd = async (result: DropResult) => {
+        if (result.combine) {
+            const draggedItemDocument = await query.collection("items").withConverter(ItemDocumentConverter).doc(result.draggableId).get();
+
+            await query.collection("items")
+                .withConverter(ItemDocumentConverter)
+                .doc(result.combine.draggableId)
+                .update({
+                    children: firebase.firestore.FieldValue.arrayUnion(ItemDocumentConverter.toFirestore({
+                        ...draggedItemDocument.data(),
+                        id: result.draggableId,
+                        parentId: result.combine.draggableId,
+                    })),
+                });
+
+            await query.collection("items").doc(draggedItemDocument.id).update({ header: ""});
+        }
+
         if (result.destination) {
-            query
+            await query
                 .collection("items")
                 .doc(result.draggableId)
                 .update({header: result.destination.droppableId, index: result.destination.index});

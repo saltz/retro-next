@@ -25,11 +25,9 @@ export const UserDocumentConverter: UserDocumentConverter = {
     }),
     fromFirestore: (snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions) => {
         const data = snapshot.data(options);
-
-        return new UserDocument(data.displayName, data.email, data.photoURL);
+        return UserDocumentConverter.toUserDocument(data)
     },
     toUserDocument: (data) => {
-
         return new UserDocument(data.displayName, data.email, data.photoURL);
     },
 }
