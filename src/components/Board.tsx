@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import {BoardDocument} from "../models/BoardDocument";
-import {Col, Divider, Row, Typography} from "antd";
+import {Col, Divider, Row, Space, Tooltip} from "antd";
 import {CurrentUsers} from "./board/CurrentUsers";
 import {Column} from "./Column";
 import {useCollectionData} from "react-firebase-hooks/firestore";
@@ -8,6 +8,8 @@ import {VoteDocument} from "../models/VoteDocument";
 import firebase from "../utils/firebaseClient";
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {ItemDocumentConverter} from "../models/ItemDocument";
+import {GradientHeader} from "./shared/GradientHeader";
+import {CheckOutlined, CopyOutlined} from "@ant-design/icons";
 
 interface IProps {
     id: string;
@@ -36,6 +38,7 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
             .collection("votes")
             .where("userId", "==", currentUser.uid)
     );
+    const [keyCopied, setKeyCopied] = useState<boolean>(false);
 
     const onDragEnd = async (result: DropResult) => {
         if (result.combine) {
@@ -52,7 +55,9 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
                     })),
                 });
 
-            await query.collection("items").doc(draggedItemDocument.id).update({ header: ""});
+            const votes = await query.collection("votes").where("itemId", "==", result.draggableId).get();
+            votes.docs.forEach((vote) => query.collection("votes").doc(vote.id).delete());
+            await query.collection("items").doc(draggedItemDocument.id).update({header: "", votes: 0});
         }
 
         if (result.destination) {
@@ -73,7 +78,30 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
             <DragDropContext onDragEnd={onDragEnd}>
                 <div style={{padding: "0 30px 0"}}>
                     <Row justify="center">
-                        <Typography.Title style={{marginTop: "30px"}}>{props.board.name}</Typography.Title>
+                        <Space>
+                            <GradientHeader
+                                text={props.board.name}
+                                fontSize="48px"
+                                gradient={"140deg, rgba(80,227,194,1) 25%, rgba(95,24,175,1) 83%"}
+                            />
+                            <Tooltip
+                                title="Copy board key"
+                                placement="right"
+                            >
+                                {keyCopied ? (
+                                    <CheckOutlined style={{fontSize: "20px"}} />
+                                ) : (
+                                    <CopyOutlined
+                                        style={{fontSize: "20px", cursor: "pointer"}}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(props.id);
+                                            setKeyCopied(true);
+                                            setTimeout(() => setKeyCopied(false), 1000);
+                                        }}
+                                    />
+                                )}
+                            </Tooltip>
+                        </Space>
                     </Row>
                     <Divider/>
                     <Row justify="center" style={{marginBottom: "20px"}}>

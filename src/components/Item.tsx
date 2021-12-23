@@ -151,7 +151,7 @@ export const Item: React.FC<IProps> = (props: IProps) => {
                     </Space>
                 ) : (
                     <Popconfirm
-                        title="Are you sure you want to unstack this item?"
+                        title="Are you sure you want to ungroup this item?"
                         onConfirm={() => removeFromParentItem(props.item)}
                         okText="Yes"
                         cancelText="No"
