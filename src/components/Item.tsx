@@ -1,5 +1,4 @@
 import React from "react";
-import { Item as ItemModel} from "../models/item";
 
 interface IProps {
     item: ItemModel;

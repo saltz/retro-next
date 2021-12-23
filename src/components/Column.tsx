@@ -1,10 +1,11 @@
 import React from "react";
 import {DragDropContext, Droppable} from "react-beautiful-dnd";
-import {Item as ItemModel} from "../models/item";
-import {Button} from "antd";
 import firebase from "../utils/firebaseClient";
 import {useCollectionData, useDocumentData} from "react-firebase-hooks/firestore";
 import {PageSpinner} from "./shared/PageSpinner";
+import {ItemDocument, ItemDocumentConverter} from "../models/ItemDocument";
+import {BoardDocumentConverter} from "../models/BoardDocument";
+import {Button} from "antd";
 
 interface IProps {
     id: string;
@@ -12,18 +13,18 @@ interface IProps {
 
 
 export const Column: React.FC<IProps> = (props: IProps) => {
-    const query = firebase.firestore().collection("boards").doc(props.id).collection("items");
+    const query = firebase
+        .firestore()
+        .collection("boards")
+        .withConverter(BoardDocumentConverter)
+        .doc(props.id)
+        .collection("items")
+        .withConverter(ItemDocumentConverter);
 
-    const [items, itemsLoading, itemsError] = useCollectionData<ItemModel>(query);
+    const [items, loading, error] = useCollectionData<ItemDocument>(query);
 
-    if (itemsLoading || !items) {
+    if (loading && !items) {
         return <PageSpinner/>
-    }
-
-    const addItem = () => {
-        query.add({
-            title: "new"
-        });
     }
 
     return (
@@ -33,12 +34,14 @@ export const Column: React.FC<IProps> = (props: IProps) => {
                 <Droppable droppableId={props.id}>
                     {(provider, snapshot) => (
                         <div>
-                            {items.map((item) => <h1>{item.title}</h1>)}
+                            {items.map((item) => <h1>{item.content}</h1>)}
                         </div>
                     )}
                 </Droppable>
+                <Button onClick={() => query.add(new ItemDocument("cool"))}>
+                    CLICK ME
+                </Button>
             </DragDropContext>
-            <Button onClick={() => addItem()}> click </Button>
         </div>
     );
 }

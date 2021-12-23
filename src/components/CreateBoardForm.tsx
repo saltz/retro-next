@@ -5,7 +5,7 @@ import {FormBase} from "./form/FormBase";
 import {object, string} from "yup";
 import {useRouter} from "next/router";
 import firebase from "../utils/firebaseClient";
-import * as uuid from "uuid";
+import {BoardDocument, BoardDocumentConverter} from "../models/BoardDocument";
 
 type CreateBoardForm = {
     name: string
@@ -19,13 +19,11 @@ export const CreateBoardForm: React.FC = () => {
     const router = useRouter();
 
     const onSubmit: SubmitHandler<CreateBoardForm> = async ({ name }) => {
-        const board = {
-            id: uuid.v4(),
-            name,
-        };
-
-        const document = await firebase.firestore().collection("boards").add(board);
-        await router.push(`/${document.id}`)
+        const board = new BoardDocument(name);
+        const document = await firebase.firestore().collection("boards")
+            .withConverter(BoardDocumentConverter)
+            .add(board);
+        await router.push(`/boards/${document.id}`)
     };
 
     return (

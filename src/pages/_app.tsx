@@ -1,7 +1,5 @@
 import "../styles/global.css";
 
-import {StoreProvider} from "easy-peasy";
-import {store} from "../store";
 import {AppProps} from "next/app";
 
 const App = (props: AppProps) => {
@@ -9,12 +7,10 @@ const App = (props: AppProps) => {
 
     return (
         <>
-            <StoreProvider store={store}>
-                <Component {...pageProps}/>
-            </StoreProvider>
+            <Component {...pageProps}/>
             <style global jsx>
                 {`
-                    body, div#__next, div#__next > div {
+                    body, div#__next, div#__next {
                       height: 100%;
                     }
                 `}
