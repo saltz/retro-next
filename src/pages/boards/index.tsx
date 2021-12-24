@@ -34,10 +34,48 @@ const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
         .where("owner", "==", props.user.uid ?? "undefined")
     );
 
+    const [exportLoading, setExportLoading] = useState<boolean>(false);
+
     const deleteAllBoards = (): void => {
         for (const board of boards.docs) {
             firebase.firestore().collection("boards").doc(board.id).delete();
         }
+    };
+
+    const downloadJsonFile = (name: string, data: object): void => {
+        const blob = new Blob([JSON.stringify(data)], { type: "text/json" })
+        const a = document.createElement('a')
+        a.download = `${name} export ${moment().format("DD-MM-YYYY")}.json`;
+        a.href = window.URL.createObjectURL(blob)
+        const clickEvt = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+        });
+        a.dispatchEvent(clickEvt);
+        a.remove();
+    };
+
+    const exportAllBoards = async (): Promise<void> => {
+        setExportLoading(true);
+
+        const data: object[] = [];
+
+        for (const board of boards.docs) {
+            const itemsSnapshot = await firebase
+                .firestore().collection("boards").doc(board.id)
+                .collection("items")
+                .withConverter(ItemDocumentConverter)
+                .get();
+
+            data.push({
+                ...board.data(),
+                items: itemsSnapshot.docs.map((item) => item.data()),
+            });
+        }
+
+        downloadJsonFile("all boards", data);
+        setExportLoading(false);
     };
 
     const BoardCard = ({snapshot}: { snapshot: QueryDocumentSnapshot<BoardDocument> }): JSX.Element => {
@@ -55,25 +93,6 @@ const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
         const updateBoard = ({name, maximumVotes}): void => {
             query.update({name, maximumVotes});
             setEditing(false);
-        };
-
-        const exportToJson = (): void => {
-            const data = {
-                ...board,
-                items: items,
-            };
-
-            const blob = new Blob([JSON.stringify(data)], { type: "text/json" })
-            const a = document.createElement('a')
-            a.download = `${board.name}_export_${moment().format("DD-MM-YYYY")}.json`;
-            a.href = window.URL.createObjectURL(blob)
-            const clickEvt = new MouseEvent('click', {
-                view: window,
-                bubbles: true,
-                cancelable: true,
-            });
-            a.dispatchEvent(clickEvt);
-            a.remove();
         };
 
         const deleteBoard = (): void => {
@@ -112,7 +131,7 @@ const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
                                 }
                             </Tooltip>,
                             <Tooltip key="export" title="Export to JSON">
-                                <ExportOutlined onClick={() => exportToJson()}/>
+                                <ExportOutlined onClick={() => downloadJsonFile(board.name, {...board, items})}/>
                             </Tooltip>,
                             <Popconfirm
                                 key="delete"
@@ -185,16 +204,25 @@ const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
                         </div>
                     </Tooltip>
                     {boards?.docs?.length > 0 && (
-                        <Tooltip title="Delete all boards">
-                            <Popconfirm
-                                title="Are you sure you want to delete all you boards?"
-                                onConfirm={deleteAllBoards}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <Button icon={<DeleteOutlined/>} type="link"/>
-                            </Popconfirm>
-                        </Tooltip>
+                        <>
+                            <Tooltip title="Export all boards to JSON">
+                                <Button
+                                    icon={!exportLoading ? <ExportOutlined/> : <LoadingOutlined spin/>}
+                                    type="link"
+                                    onClick={() => exportAllBoards()}
+                                />
+                            </Tooltip>
+                            <Tooltip title="Delete all boards">
+                                <Popconfirm
+                                    title="Are you sure you want to delete all you boards?"
+                                    onConfirm={deleteAllBoards}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <Button icon={<DeleteOutlined/>} type="link"/>
+                                </Popconfirm>
+                            </Tooltip>
+                        </>
                     )}
                 </Space>
             </Row>
