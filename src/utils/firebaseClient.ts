@@ -1,6 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
+import "firebase/compat/app-check";
 
 const config = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,6 +14,7 @@ const config = {
 
 if (!firebase.apps.length) {
     firebase.initializeApp(config);
+    firebase.appCheck().activate(process.env.NEXT_PUBLIC_CAPTCHA_KEY, true);
 }
 
 export default firebase;

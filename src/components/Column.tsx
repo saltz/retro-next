@@ -68,6 +68,7 @@ export const Column: React.FC<IProps> = (props: IProps) => {
                                 ))}
                             </Col>
                         </Row>
+                        {provider.placeholder}
                         <Row justify="end">
                             <Col span={24} style={{padding: "10px"}}>
                                 <ItemTextArea
