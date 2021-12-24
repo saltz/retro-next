@@ -1,11 +1,26 @@
 import React from "react";
-import {Avatar, Dropdown, Menu, Space} from "antd";
-import {LogoutOutlined, UserOutlined} from "@ant-design/icons";
+import {Dropdown, Menu, Space} from "antd";
+import {LogoutOutlined} from "@ant-design/icons";
 import firebase from "../utils/firebaseClient";
 import {UserAvatar} from "./shared/UserAvatar";
+import {BoardDocumentConverter} from "../models/BoardDocument";
 
 export const PersonalMenu: React.FC = (): JSX.Element => {
-    const signOut = () => firebase.auth().signOut();
+    const signOut = async () => {
+        const boards = await firebase.firestore().collection("boards").withConverter(BoardDocumentConverter).get();
+
+        for (const board of boards.docs) {
+            await firebase
+                .firestore()
+                .collection("boards")
+                .doc(board.id)
+                .collection("users")
+                .doc(firebase.auth().currentUser.uid)
+                .delete();
+        }
+
+       await firebase.auth().signOut();
+    };
 
     const dropdownMenu = (
         <Menu>
