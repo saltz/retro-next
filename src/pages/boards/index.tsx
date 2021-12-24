@@ -100,18 +100,17 @@ const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
                                     </Link>
                                 </div>
                             </Tooltip>,
-                            <div key="edit">
+                            <Tooltip key="edit" title={editing ? "Save changes" : "Edit board"}>
                                 {!editing
-                                    ? <Tooltip title="Edit board">
-                                        <EditOutlined key="edit" onClick={() => setEditing(true)}/>
-                                    </Tooltip>
-                                    : <Tooltip title="Save changes">
-                                        <Button htmlType="submit"
-                                                style={{border: "unset", margin: "unset", boxShadow: "unset"}}>
+                                    ? <EditOutlined key="edit" onClick={() => setEditing(true)}/>
+                                    : <Button
+                                        htmlType="submit"
+                                        style={{border: "unset", margin: "unset", boxShadow: "unset"}}
+                                    >
                                             <CheckOutlined key="edit"/>
                                         </Button>
-                                    </Tooltip>}
-                            </div>,
+                                }
+                            </Tooltip>,
                             <Tooltip key="export" title="Export to JSON">
                                 <ExportOutlined onClick={() => exportToJson()}/>
                             </Tooltip>,
