@@ -113,7 +113,7 @@ const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
                                     </Tooltip>}
                             </div>,
                             <Tooltip key="export" title="Export to JSON">
-                                <ExportOutlined onClick={() => exportToJson()}/>,
+                                <ExportOutlined onClick={() => exportToJson()}/>
                             </Tooltip>,
                             <Popconfirm
                                 key="delete"
@@ -123,7 +123,7 @@ const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
                                 cancelText="No"
                             >
                                 <DeleteOutlined style={{color: "#df4040"}}/>
-                            </Popconfirm>,
+                            </Popconfirm>
                         ]}
                     >
                         <Card.Meta
