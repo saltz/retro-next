@@ -9,16 +9,20 @@ interface IProps {
 }
 
 export const GradientHeader: React.FC<IProps> = (props: IProps): JSX.Element => (
-    <span
-        style={{
-            fontSize: props.fontSize,
-            fontWeight: props.fontWeight,
-            background: `linear-gradient(${props.gradient}`,
-            color: "transparent",
-            backgroundClip: "text"
-        }}
-        className={props.className}
-    >
+    <>
+      <span className={props.className}>
         {props.text}
     </span>
+        <style jsx>
+            {`
+              span {
+                font-size: ${props.fontSize ?? ""};
+                font-weight: ${props.fontWeight ?? ""};
+                background: linear-gradient(${props.gradient});
+                background-clip: text;
+                color: transparent !important;
+              }
+            `}
+        </style>
+    </>
 );

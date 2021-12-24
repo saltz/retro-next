@@ -26,13 +26,13 @@ export const CurrentUsers: React.FC<IProps> = (props: IProps): JSX.Element => {
 
     const leavingBoard = () => {
         query
-            .doc(currentUser.displayName)
+            .doc(currentUser.email)
             .delete();
     };
 
     useEffect(() => {
         query
-            .doc(currentUser.displayName)
+            .doc(currentUser.email)
             .set(new UserDocument(currentUser.displayName, currentUser.email, currentUser.photoURL));
 
         router.events.on("routeChangeStart", leavingBoard);

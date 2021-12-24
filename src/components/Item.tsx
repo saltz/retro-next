@@ -130,6 +130,7 @@ export const Item: React.FC<IProps> = (props: IProps) => {
         <Card style={{margin: "10px", ...props.style}} {...props.draggableProps}>
             <Row justify="space-between">
                 <Card.Meta
+                    title={currentUser.displayName}
                     avatar={<UserAvatar size={35} user={props.item.user} tooltip tooltipPlacement="right"/>}
                 />
                 {props.id ? (
