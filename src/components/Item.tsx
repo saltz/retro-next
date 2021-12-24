@@ -58,7 +58,6 @@ export const Item: React.FC<IProps> = (props: IProps) => {
         let votes = props.item.votes;
 
 
-
         if (event.target.value === "upvote") {
             if (currentVote?.state === "downvote") {
                 votes = votes + 2
@@ -139,78 +138,87 @@ export const Item: React.FC<IProps> = (props: IProps) => {
     };
 
     const ItemCard = (props: IItemCardProps) => (
-        <Card style={{margin: "10px", ...props.style}} {...props.draggableProps}>
-            <Row justify="space-between">
-                <Card.Meta
-                    title={currentUser.displayName}
-                    avatar={<UserAvatar size={35} user={props.item.user} tooltip tooltipPlacement="right"/>}
-                />
-                {props.id ? (
-                    <Space size={10}>
-                        <Tag color={getVotesColor()}>
-                            {props.item.votes > 0 && "+"}
-                            {props.item.votes}
-                        </Tag>
-                        <EditOutlined style={{cursor: "pointer"}}
-                                      onClick={() => setEditing(!editing)}/>
+        <>
+            <Card style={{margin: "10px", ...props.style}} {...props.draggableProps}>
+                <Row justify="space-between">
+                    <Card.Meta
+                        title={currentUser.displayName}
+                        avatar={<UserAvatar size={35} user={props.item.user} tooltip tooltipPlacement="right"/>}
+                    />
+                    {props.id ? (
+                        <Space size={10}>
+                            <Tag color={getVotesColor()}>
+                                {props.item.votes > 0 && "+"}
+                                {props.item.votes}
+                            </Tag>
+                            <EditOutlined className="item-card-edit" style={{cursor: "pointer"}}
+                                          onClick={() => setEditing(!editing)}/>
+                            <Popconfirm
+                                title="Are you sure you want to delete this item?"
+                                onConfirm={deleteItem}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <DeleteOutlined style={{color: "#df4040"}}/>
+                            </Popconfirm>
+                        </Space>
+                    ) : (
                         <Popconfirm
-                            title="Are you sure you want to delete this item?"
-                            onConfirm={deleteItem}
+                            title="Are you sure you want to ungroup this item?"
+                            onConfirm={() => removeFromParentItem(props.item)}
                             okText="Yes"
                             cancelText="No"
                         >
-                            <DeleteOutlined style={{color: "#df4040"}}/>
+                            <RollbackOutlined/>
                         </Popconfirm>
-                    </Space>
-                ) : (
-                    <Popconfirm
-                        title="Are you sure you want to ungroup this item?"
-                        onConfirm={() => removeFromParentItem(props.item)}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <RollbackOutlined/>
-                    </Popconfirm>
-                )}
-            </Row>
-            <Row justify="center" style={{margin: "20px 32px 0 0"}}>
-                {editing && props.id ? (
-                    <ItemTextArea
-                        onPressEnter={(value) => {
-                            if (value) {
-                                props.itemQuery.doc(props.id).update({content: value});
-                            }
-                            setEditing(false);
-                        }}
-                        defaultValue={props.item.content}
-                        margin="30px"
-                    />
-                ) : <p>{props.item.content}</p>}
-            </Row>
-            {props.item.children?.length > 0 && props.item.children.map((childItem, index) => (
-                <ItemCard key={index} item={childItem} itemQuery={props.itemQuery}/>
-            ))}
-            {props.id && (
-                <Row justify="end">
-                    <Tooltip
-                        title={votingDisabled() ? `You can no longer vote, you have already voted ${voteContext.maximumAmountOfVotes} times` : undefined}>
-                        <Radio.Group
-                            disabled={votingDisabled()}
-                            optionType="button"
-                            value={currentVote?.state}
-                            onChange={vote}
-                        >
-                            <Radio.Button value="upvote" onClick={resetVote}>
-                                <LikeOutlined/>
-                            </Radio.Button>
-                            <Radio.Button value="downvote" onClick={resetVote}>
-                                <DislikeOutlined/>
-                            </Radio.Button>
-                        </Radio.Group>
-                    </Tooltip>
+                    )}
                 </Row>
-            )}
-        </Card>
+                <Row justify="center" style={{margin: "20px 32px 0 0"}}>
+                    {editing && props.id ? (
+                        <ItemTextArea
+                            onPressEnter={(value) => {
+                                if (value) {
+                                    props.itemQuery.doc(props.id).update({content: value});
+                                }
+                                setEditing(false);
+                            }}
+                            defaultValue={props.item.content}
+                            margin="30px"
+                        />
+                    ) : <p>{props.item.content}</p>}
+                </Row>
+                {props.item.children?.length > 0 && props.item.children.map((childItem, index) => (
+                    <ItemCard key={index} item={childItem} itemQuery={props.itemQuery}/>
+                ))}
+                {props.id && (
+                    <Row justify="end">
+                        <Tooltip
+                            title={votingDisabled() ? `You can no longer vote, you have already voted ${voteContext.maximumAmountOfVotes} times` : undefined}>
+                            <Radio.Group
+                                disabled={votingDisabled()}
+                                optionType="button"
+                                value={currentVote?.state}
+                                onChange={vote}
+                            >
+                                <Radio.Button value="upvote" onClick={resetVote}>
+                                    <LikeOutlined/>
+                                </Radio.Button>
+                                <Radio.Button value="downvote" onClick={resetVote}>
+                                    <DislikeOutlined/>
+                                </Radio.Button>
+                            </Radio.Group>
+                        </Tooltip>
+                    </Row>
+                )}
+            </Card>
+            <style jsx>
+                {`
+                  :global(.item-card-edit:hover) {
+                    color: #7058ff;
+                  }
+                `}
+            </style>
+        </>
     );
 
     return (
