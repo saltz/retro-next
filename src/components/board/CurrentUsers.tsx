@@ -38,6 +38,7 @@ export const CurrentUsers: React.FC<IProps> = (props: IProps): JSX.Element => {
         router.events.on("routeChangeStart", leavingBoard);
 
         if (window) {
+            window.addEventListener("beforeunload", leavingBoard);
             window.onbeforeunload = () => leavingBoard();
         }
 
