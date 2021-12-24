@@ -1,4 +1,4 @@
-import React from "react";
+import React, {CSSProperties} from "react";
 
 interface IProps {
     text: string;
@@ -6,11 +6,12 @@ interface IProps {
     className?: string;
     fontSize?: string;
     fontWeight?: number;
+    style?: CSSProperties;
 }
 
 export const GradientHeader: React.FC<IProps> = (props: IProps): JSX.Element => (
     <>
-      <span className={props.className}>
+      <span className={props.className} style={props.style}>
         {props.text}
     </span>
         <style jsx>

@@ -1,30 +1,39 @@
 import React from "react";
 import {Dropdown, Menu, Space} from "antd";
-import {LogoutOutlined} from "@ant-design/icons";
+import {LogoutOutlined, ProjectOutlined} from "@ant-design/icons";
 import firebase from "../utils/firebaseClient";
 import {UserAvatar} from "./shared/UserAvatar";
-import {BoardDocumentConverter} from "../models/BoardDocument";
+import {useRouter} from "next/router";
 
 export const PersonalMenu: React.FC = (): JSX.Element => {
-    const signOut = async () => {
-        const boards = await firebase.firestore().collection("boards").withConverter(BoardDocumentConverter).get();
+    const router = useRouter();
 
-        for (const board of boards.docs) {
-            await firebase
+    const signOut = (): void => {
+        const auth = firebase.auth();
+
+        // if on board remove from active users
+        if (router.query.id) {
+            firebase
                 .firestore()
                 .collection("boards")
-                .doc(board.id)
+                .doc(router.query.id as string)
                 .collection("users")
-                .doc(firebase.auth().currentUser.uid)
-                .delete();
+                .doc(auth.currentUser.uid)
+                .delete()
         }
 
-       await firebase.auth().signOut();
+        auth.signOut();
     };
 
     const dropdownMenu = (
         <Menu>
-            <Menu.Item key="0" onClick={() => signOut()}>
+            <Menu.Item key="boards" onClick={() => router.push("/boards")}>
+                <Space>
+                    <ProjectOutlined />
+                    <span>My boards</span>
+                </Space>
+            </Menu.Item>
+            <Menu.Item key="sign-out" onClick={() => signOut()}>
                 <Space>
                     <LogoutOutlined/>
                     <span>Sign out</span>

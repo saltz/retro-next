@@ -26,7 +26,7 @@ export const Column: React.FC<IProps> = (props: IProps) => {
 
     const [items, loading] = useCollection<ItemDocument>(
         query
-            .where("header", "==", props.header)
+            .where("column", "==", props.header)
             .orderBy("index", "asc")
     );
 

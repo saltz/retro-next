@@ -7,7 +7,7 @@ import {SignInForm} from "./forms/SignInForm";
 import {NextPage} from "next";
 
 interface IProps {
-    user: firebase.User;
+    user?: firebase.User;
 }
 
 export const withAuthentication = (Page: NextPage<IProps>) => {

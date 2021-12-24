@@ -25,4 +25,4 @@ export const FormControlBase = <T extends FieldValues>(props: IProps<T>) => {
             {props.render(controller)}
         </Form.Item>
     )
-}
+};

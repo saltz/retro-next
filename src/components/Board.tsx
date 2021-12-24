@@ -57,14 +57,14 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
 
             const votes = await query.collection("votes").where("itemId", "==", result.draggableId).get();
             votes.docs.forEach((vote) => query.collection("votes").doc(vote.id).delete());
-            await query.collection("items").doc(draggedItemDocument.id).update({header: "", votes: 0});
+            await query.collection("items").doc(draggedItemDocument.id).update({column: "", votes: 0});
         }
 
         if (result.destination) {
             await query
                 .collection("items")
                 .doc(result.draggableId)
-                .update({header: result.destination.droppableId, index: result.destination.index});
+                .update({column: result.destination.droppableId, index: result.destination.index});
         }
     };
 

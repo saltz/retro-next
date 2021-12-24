@@ -1,23 +1,14 @@
 import {NextPage} from "next";
 import {useRouter} from "next/router";
 import {PageSpinner} from "../../components/shared/PageSpinner";
-import {Avatar, Button, Result, Tooltip} from "antd";
-import {AppLayout} from "../../components/layouts/AppLayout";
-import {Column} from "../../components/Column";
+import {Button, Result} from "antd";
 import firebase from "../../utils/firebaseClient";
-import {useCollectionData, useDocumentDataOnce} from "react-firebase-hooks/firestore";
+import {useDocumentDataOnce} from "react-firebase-hooks/firestore";
 import {BoardDocument, BoardDocumentConverter} from "../../models/BoardDocument";
 import {withAuthentication} from "../../components/withAuthentication";
-import {useEffect} from "react";
-import {UserAvatar} from "../../components/shared/UserAvatar";
-import {UserDocument, UserDocumentConverter} from "../../models/UserDocument";
 import {Board} from "../../components/Board";
 
-interface IProps {
-    user: firebase.User;
-}
-
-const BoardPage: NextPage<IProps> = (props: IProps) => {
+const BoardPage: NextPage = () => {
     const router = useRouter();
     const id: string = router.query.id as string ?? "undefined";
 
@@ -28,7 +19,6 @@ const BoardPage: NextPage<IProps> = (props: IProps) => {
         .doc(id as string);
 
     const [board, boardLoading, boardError] = useDocumentDataOnce<BoardDocument>(boardQuery);
-
 
     if (!boardLoading && !board) {
         return (

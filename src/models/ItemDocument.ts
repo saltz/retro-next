@@ -3,7 +3,7 @@ import {FirestoreDataConverter} from "@firebase/firestore-types";
 import {UserDocument, UserDocumentConverter} from "./UserDocument";
 
 export class ItemDocument {
-    header: string;
+    column: string;
     index: number;
     user: UserDocument;
     content: string;
@@ -12,8 +12,8 @@ export class ItemDocument {
     children: ItemDocument[];
     id: string;
 
-    constructor(header: string, index: number, user: UserDocument, content: string, votes: number = 0, parentId: string = "", children: ItemDocument[] = [], id: string = "") {
-        this.header = header;
+    constructor(column: string, index: number, user: UserDocument, content: string, votes: number = 0, parentId: string = "", children: ItemDocument[] = [], id: string = "") {
+        this.column = column;
         this.index = index;
         this.user = user;
         this.content = content;
@@ -26,7 +26,7 @@ export class ItemDocument {
 
 export const ItemDocumentConverter: FirestoreDataConverter<ItemDocument> = {
     toFirestore: (item: ItemDocument): firebase.firestore.DocumentData => ({
-        header: item.header,
+        column: item.column,
         index: item.index,
         user: UserDocumentConverter.toFirestore(item.user),
         content: item.content,
@@ -37,6 +37,6 @@ export const ItemDocumentConverter: FirestoreDataConverter<ItemDocument> = {
     }),
     fromFirestore: (snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions) => {
         const data = snapshot.data(options);
-        return new ItemDocument(data.header, data.index, UserDocumentConverter.toUserDocument(data.user) , data.content, data.votes, data.parentId, data.children, data.id);
+        return new ItemDocument(data.column, data.index, UserDocumentConverter.toUserDocument(data.user) , data.content, data.votes, data.parentId, data.children, data.id);
     },
 }

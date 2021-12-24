@@ -134,7 +134,7 @@ export const Item: React.FC<IProps> = (props: IProps) => {
             children: firebase.firestore.FieldValue.arrayRemove(ItemDocumentConverter.toFirestore(item)),
         });
 
-        await props.itemQuery.doc(item.id).update({header: props.item.header});
+        await props.itemQuery.doc(item.id).update({column: props.item.column});
     };
 
     const ItemCard = (props: IItemCardProps) => (
