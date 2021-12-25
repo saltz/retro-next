@@ -3,6 +3,7 @@ import Link from "next/link";
 import {GithubOutlined} from "@ant-design/icons";
 import {PersonalMenu} from "../PersonalMenu";
 import firebase from "../../utils/firebaseClient";
+import {ThemeSwitch} from "../ThemeSwitch";
 
 interface IProps {
     user: firebase.User;
@@ -13,6 +14,7 @@ export const AppLayout: React.FC<IProps> = (props: IProps): JSX.Element => (
     <>
         <div className="page-container">
             <div className="content-wrap">
+                <ThemeSwitch/>
                 {props.user && <PersonalMenu/>}
                 {props.children}
             </div>
@@ -20,7 +22,7 @@ export const AppLayout: React.FC<IProps> = (props: IProps): JSX.Element => (
                 <span>
                     A simple responsive retrospective app created by
                     <Link href="https://github.com/saltz"> Dane Naebers </Link>
-                    view source on <Link href="https://github.com/saltz/retro-next"><GithubOutlined/></Link>
+                    view source on <Link href="https://github.com/saltz/retro-next" passHref={true}><GithubOutlined/></Link>
                 </span>
             </div>
         </div>

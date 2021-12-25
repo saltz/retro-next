@@ -108,9 +108,9 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
                 >
                     <Card
                         actions={[
-                            <Tooltip title="Go to board">
+                            <Tooltip key="home" title="Go to board">
                                 <div>
-                                    <Link href={`/boards/${snapshot.id}`}>
+                                    <Link href={`/boards/${snapshot.id}`} passHref={true}>
                                         <SelectOutlined />
                                     </Link>
                                 </div>
@@ -194,8 +194,8 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
                 <Space>
                     <Tooltip title="Go to home">
                         <div>
-                            <Link href="/">
-                                <Button icon={<HomeOutlined/>} type="link"/>
+                            <Link href="/" passHref={true}>
+                                <Button icon={<HomeOutlined style={{marginTop: "7px"}}/>} type="link"/>
                             </Link>
                         </div>
                     </Tooltip>

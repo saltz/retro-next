@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
-import {UserAvatar} from "../shared/UserAvatar";
+import {UserAvatar} from "./shared/UserAvatar";
 import {Avatar, Skeleton} from "antd";
 import {useCollectionData} from "react-firebase-hooks/firestore";
-import {UserDocument, UserDocumentConverter} from "../../models/UserDocument";
+import {UserDocument, UserDocumentConverter} from "../models/UserDocument";
 import {useRouter} from "next/router";
-import firebase from "../../utils/firebaseClient";
-import {BoardDocumentConverter} from "../../models/BoardDocument";
+import firebase from "../utils/firebaseClient";
+import {BoardDocumentConverter} from "../models/BoardDocument";
 
 interface IProps {
     boardId: string;
@@ -45,7 +45,7 @@ export const CurrentUsers: React.FC<IProps> = (props: IProps): JSX.Element => {
         return () => {
             router.events.off("routeChangeStart", leavingBoard);
         }
-    }, []);
+    }, [currentUser]);
 
     return (
         <Avatar.Group>

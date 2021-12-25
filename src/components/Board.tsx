@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {BoardDocument} from "../models/BoardDocument";
 import {Col, Divider, Row, Space, Tooltip} from "antd";
-import {CurrentUsers} from "./board/CurrentUsers";
+import {CurrentUsers} from "./CurrentUsers";
 import {Column} from "./Column";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {VoteDocument} from "../models/VoteDocument";
