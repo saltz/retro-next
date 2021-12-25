@@ -14,7 +14,10 @@ const config = {
 
 if (!firebase.apps.length) {
     firebase.initializeApp(config);
-    firebase.appCheck().activate(process.env.NEXT_PUBLIC_CAPTCHA_KEY, true);
+
+    if (window || document) {
+        firebase.appCheck().activate(process.env.NEXT_PUBLIC_CAPTCHA_KEY, true);
+    }
 }
 
 export default firebase;

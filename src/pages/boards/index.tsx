@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {NextPage} from "next";
 import {Button, Card, Col, Descriptions, Divider, InputNumber, Popconfirm, Row, Space, Tooltip} from "antd";
 import {GradientHeader} from "../../components/shared/GradientHeader";
@@ -21,6 +21,7 @@ import {FormBase} from "../../components/forms/FormBase";
 import {InputControl} from "../../components/forms/controls/InputControl";
 import {FormControlBase} from "../../components/forms/controls/FormControlBase";
 import moment from "moment";
+import {randomGradient} from "../../utils/colorGenerator";
 
 const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
     const [boards, loading] = useCollection<BoardDocument>(firebase
@@ -77,6 +78,7 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
     const BoardCard = ({snapshot}: { snapshot: QueryDocumentSnapshot<BoardDocument> }): JSX.Element => {
         const board = snapshot.data();
         const query = firebase.firestore().collection("boards").doc(snapshot.id);
+        const gradient = useMemo(() => randomGradient(3), [snapshot.id]);
 
         const [editing, setEditing] = useState<boolean>(false);
 
@@ -144,7 +146,11 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
                             title={
                                 editing
                                     ? <InputControl name="name"/>
-                                    : board.name
+                                    : <GradientHeader
+                                        text={board.name}
+                                        fontSize="20px"
+                                        gradient={gradient}
+                                    />
                             }
                             description={
                                 <>
