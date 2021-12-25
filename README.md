@@ -1,13 +1,13 @@
-<div align="center">
-    <img align="center" src="https://i.imgur.com/YDwNSXi.png"/>
-</div>
+# retro-next
 
-# Core characteristics
+The fast and responsive retrospective board
+
+## Core characteristics
 
 - See active board members
-- Item voting
-- Drag and drop items accross board columns
-- Grouping of items
+- Vote on items
+- Drag and drop items accross columns
+- Group items
 - View, edit and delete your boards
 - Export to JSON
 
@@ -19,5 +19,5 @@
 
 ## Creator ✍️
 
-Dane Naebers [@saltz](https://github.com/saltz)
+Dane Naebers [@saltz](https://dane.naebers.net)
 

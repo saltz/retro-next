@@ -6,6 +6,7 @@
     "lint": "next lint",
     "less": "src/styles/compile.sh"
   },
+  "license": "LICENSE.md",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@hookform/resolvers": "^2.8.5",
