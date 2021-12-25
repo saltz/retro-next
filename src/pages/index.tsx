@@ -3,9 +3,9 @@ import {Card, Col, Divider, Row} from "antd";
 import {JoinBoardForm} from "../components/forms/JoinBoardForm";
 import {CreateBoardForm} from "../components/forms/CreateBoardForm";
 import {GradientHeader} from "../components/shared/GradientHeader";
-import {withAuthentication} from "../components/withAuthentication";
+import {IPageProps, withAuthentication} from "../components/withAuthentication";
 
-const Index: NextPage = (): JSX.Element => (
+const Index: NextPage<IPageProps> = (): JSX.Element => (
     <>
         <Row justify="center" align="middle">
             <GradientHeader

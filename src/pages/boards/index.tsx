@@ -16,17 +16,13 @@ import {
 import Link from "next/link";
 import {ItemDocumentConverter} from "../../models/ItemDocument";
 import {QueryDocumentSnapshot} from "@firebase/firestore";
-import {withAuthentication} from "../../components/withAuthentication";
+import {IPageProps, withAuthentication} from "../../components/withAuthentication";
 import {FormBase} from "../../components/forms/FormBase";
 import {InputControl} from "../../components/forms/controls/InputControl";
 import {FormControlBase} from "../../components/forms/controls/FormControlBase";
 import moment from "moment";
 
-interface IProps {
-    user: firebase.User;
-}
-
-const Index: NextPage<IProps> = (props: IProps): JSX.Element => {
+const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
     const [boards, loading] = useCollection<BoardDocument>(firebase
         .firestore()
         .collection("boards")

@@ -5,10 +5,10 @@ import {Button, Result} from "antd";
 import firebase from "../../utils/firebaseClient";
 import {useDocumentDataOnce} from "react-firebase-hooks/firestore";
 import {BoardDocument, BoardDocumentConverter} from "../../models/BoardDocument";
-import {withAuthentication} from "../../components/withAuthentication";
+import {IPageProps, withAuthentication} from "../../components/withAuthentication";
 import {Board} from "../../components/Board";
 
-const BoardPage: NextPage = () => {
+const BoardPage: NextPage<IPageProps> = () => {
     const router = useRouter();
     const id: string = router.query.id as string ?? "undefined";
 
