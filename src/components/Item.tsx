@@ -117,7 +117,7 @@ export const Item: React.FC<IProps> = (props: IProps) => {
     };
 
     const votingDisabled = () =>
-        voteContext.currentVotes?.length === voteContext.maximumAmountOfVotes &&
+        voteContext.currentVotes?.length >= voteContext.maximumAmountOfVotes &&
         !voteContext.currentVotes?.find((i) => i.itemId === props.id);
 
     interface IItemCardProps {
