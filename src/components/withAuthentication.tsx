@@ -23,7 +23,8 @@ export const withAuthentication = (Page: NextPage<IPageProps>) => {
                 </AppLayout>
             )
         } catch {
-            return <AppLayout user={undefined}><p>something went wrong</p></AppLayout>
+            // firebase appcheck fails in nextjs prerender return a spinner instead
+            return <AppLayout user={undefined}><PageSpinner/></AppLayout>
         }
     };
 }
