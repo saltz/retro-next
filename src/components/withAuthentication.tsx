@@ -16,14 +16,14 @@ export const withAuthentication = (Page: NextPage<IPageProps>) => {
             const [user, loading, error] = useAuthState(firebase.auth());
 
             return (
-                <AppLayout>
+                <AppLayout user={user}>
                     {loading && !user && <PageSpinner/>}
                     {!loading && !user && !error && <SignInForm/>}
                     {!loading && user && !error && <Page user={user}/>}
                 </AppLayout>
             )
         } catch {
-            return <div><p>something went wrong</p></div>
+            return <AppLayout user={undefined}><p>something went wrong</p></AppLayout>
         }
     };
 }

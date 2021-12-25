@@ -9,11 +9,11 @@ const Index: NextPage<IPageProps> = (): JSX.Element => (
     <>
         <Row justify="center" align="middle">
             <GradientHeader
-                className="app-title"
                 text="Retro Next"
                 gradient={"90deg, rgb(112, 88, 255) 35%, rgb(1, 183, 240) 100%"}
                 fontSize="60px"
                 fontWeight={600}
+                style={{margin: "80px 0 20vh"}}
             />
         </Row>
         <Row justify="center" align="middle">
@@ -40,13 +40,6 @@ const Index: NextPage<IPageProps> = (): JSX.Element => (
                 </Card>
             </Col>
         </Row>
-        <style jsx>
-            {`
-              :global(.app-title) {
-                margin: 80px 0 20vh !important;
-              }
-            `}
-        </style>
     </>
 );
 
