@@ -25,7 +25,7 @@ const BoardPage: NextPage<IPageProps> = () => {
             <Result
                 status="404"
                 title="404"
-                subTitle="BoardDocument not found"
+                subTitle="Board not found"
                 extra={<Button type="primary" onClick={() => router.back()}>Go back</Button>}
             />
         );
