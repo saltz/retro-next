@@ -10,12 +10,18 @@ interface IProps {
 type ThemeType = "light" | "dark"
 
 export const ThemeSwitch: React.FC<IProps> = (props: IProps): JSX.Element => {
-    const [currentTheme, setCurrentTheme] = useState<ThemeType>("light");
+    const {theme} = parseCookies();
+    const [currentTheme, setCurrentTheme] = useState<ThemeType>(theme as ThemeType ?? "light");
 
     useEffect(() => {
-        const {theme} = parseCookies();
+        const switchComponent = document.querySelector(".theme-switch").children[0];
 
-        setCurrentTheme(theme as ThemeType ?? "light");
+        // for some reason the switch gets broken when initially rendered in the checked state
+        // so we just flip it one more time
+        if (switchComponent && currentTheme === "dark" && !switchComponent.className.includes("checked")) {
+            setCurrentTheme("light");
+            setTimeout(() => setCurrentTheme("dark"), 1);
+        }
     }, []);
 
     useEffect(() => {
