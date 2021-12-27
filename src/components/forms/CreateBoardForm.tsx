@@ -13,7 +13,7 @@ export const CreateBoardForm: React.FC = () => {
     const router = useRouter();
     const currentUserUid = firebase.auth().currentUser.uid;
 
-    const onSubmit: SubmitHandler<BoardDocument> = async ({ name , maximumVotes = 5}) => {
+    const onSubmit: SubmitHandler<BoardDocument> = async ({name, maximumVotes}) => {
         const board = new BoardDocument(name, currentUserUid, maximumVotes, moment());
         const document = await firebase.firestore().collection("boards")
             .withConverter(BoardDocumentConverter)
@@ -24,6 +24,7 @@ export const CreateBoardForm: React.FC = () => {
     return (
         <FormBase<BoardDocument>
             onSubmit={onSubmit}
+            defaultValues={{maximumVotes: 5}}
             submitText="Create"
             schema={boardDocumentValidationSchema}
             layout="vertical"
@@ -32,7 +33,7 @@ export const CreateBoardForm: React.FC = () => {
             <FormControlBase
                 name="maximumVotes"
                 label="Maximum amount of votes per user"
-                render={(controller) => <InputNumber defaultValue={5} min={1} {...controller.field} />}
+                render={(controller) => <InputNumber min={1} {...controller.field} />}
             />
         </FormBase>
     );

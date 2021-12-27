@@ -1,5 +1,5 @@
 import React from "react";
-import {Avatar, Card, Col, Row, Skeleton, Space} from "antd";
+import {Avatar, Card, Col, Row, Skeleton} from "antd";
 import firebase from "../utils/firebaseClient";
 import {BoardDocument, BoardDocumentConverter} from "../models/BoardDocument";
 import {ItemDocument, ItemDocumentConverter} from "../models/ItemDocument";
@@ -27,6 +27,7 @@ export const Column: React.FC<IProps> = (props: IProps) => {
     const [items, loading] = useCollection<ItemDocument>(
         query
             .where("column", "==", props.header)
+            .where("parentId", "==", null)
             .orderBy("index", "asc")
     );
 

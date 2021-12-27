@@ -7,7 +7,6 @@ import {useCollectionData} from "react-firebase-hooks/firestore";
 import {VoteDocument} from "../models/VoteDocument";
 import firebase from "../utils/firebaseClient";
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
-import {ItemDocumentConverter} from "../models/ItemDocument";
 import {GradientHeader} from "./shared/GradientHeader";
 import {CheckOutlined, CopyOutlined} from "@ant-design/icons";
 
@@ -42,22 +41,18 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
 
     const onDragEnd = async (result: DropResult) => {
         if (result.combine) {
-            const draggedItemDocument = await query.collection("items").withConverter(ItemDocumentConverter).doc(result.draggableId).get();
-
-            await query.collection("items")
-                .withConverter(ItemDocumentConverter)
-                .doc(result.combine.draggableId)
-                .update({
-                    children: firebase.firestore.FieldValue.arrayUnion(ItemDocumentConverter.toFirestore({
-                        ...draggedItemDocument.data(),
-                        id: result.draggableId,
-                        parentId: result.combine.draggableId,
-                    })),
-                });
-
             const votes = await query.collection("votes").where("itemId", "==", result.draggableId).get();
-            votes.docs.forEach((vote) => query.collection("votes").doc(vote.id).delete());
-            await query.collection("items").doc(draggedItemDocument.id).update({column: "", votes: 0});
+
+            for (const vote of votes.docs) {
+                await query.collection("votes").doc(vote.id).delete();
+            }
+
+            await query.collection("items").doc(result.draggableId).update({
+                parentId: result.combine.draggableId,
+                votes: 0,
+            });
+
+            return;
         }
 
         if (result.destination) {

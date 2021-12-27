@@ -1,9 +1,9 @@
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useMemo, useState} from "react";
 import {NextPage} from "next";
 import {Button, Card, Col, Descriptions, Divider, InputNumber, Popconfirm, Row, Space, Tooltip} from "antd";
 import {GradientHeader} from "../../components/shared/GradientHeader";
 import firebase from "../../utils/firebaseClient";
-import {useCollection, useCollectionData} from "react-firebase-hooks/firestore";
+import {useCollection} from "react-firebase-hooks/firestore";
 import {BoardDocument, BoardDocumentConverter, boardDocumentValidationSchema} from "../../models/BoardDocument";
 import {
     CheckOutlined,
@@ -15,13 +15,13 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import {ItemDocumentConverter} from "../../models/ItemDocument";
-import {QueryDocumentSnapshot} from "@firebase/firestore";
 import {IPageProps, withAuthentication} from "../../components/withAuthentication";
 import {FormBase} from "../../components/forms/FormBase";
 import {InputControl} from "../../components/forms/controls/InputControl";
 import {FormControlBase} from "../../components/forms/controls/FormControlBase";
-import moment from "moment";
 import {randomGradient} from "../../utils/colorGenerator";
+import {downloadJsonFile, exportBoardToJson} from "../../utils/exportingUtils";
+import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
 
 const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
     const [boards, loading] = useCollection<BoardDocument>(firebase
@@ -39,20 +39,6 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
         }
     };
 
-    const downloadJsonFile = (name: string, data: object): void => {
-        const blob = new Blob([JSON.stringify(data)], { type: "text/json" })
-        const a = document.createElement('a')
-        a.download = `${name} export ${moment().format("DD-MM-YYYY")}.json`;
-        a.href = window.URL.createObjectURL(blob)
-        const clickEvt = new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: true,
-        });
-        a.dispatchEvent(clickEvt);
-        a.remove();
-    };
-
     const exportAllBoards = async (): Promise<void> => {
         setExportLoading(true);
 
@@ -65,10 +51,7 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
                 .withConverter(ItemDocumentConverter)
                 .get();
 
-            data.push({
-                ...board.data(),
-                items: itemsSnapshot.docs.map((item) => item.data()),
-            });
+            data.push(exportBoardToJson(board, itemsSnapshot));
         }
 
         downloadJsonFile("all boards", data);
@@ -82,7 +65,7 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
 
         const [editing, setEditing] = useState<boolean>(false);
 
-        const [items, itemsLoading] = useCollectionData(
+        const [items, itemsLoading] = useCollection(
             query
                 .collection("items")
                 .withConverter(ItemDocumentConverter)
@@ -96,6 +79,14 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
         const deleteBoard = (): void => {
             query.delete();
         };
+
+        if (itemsLoading) {
+            return (
+                <Col span={5}>
+                    <Card loading={true}><Card.Meta/></Card>
+                </Col>
+            )
+        }
 
         return (
             <Col span={5}>
@@ -129,7 +120,7 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
                                 }
                             </Tooltip>,
                             <Tooltip key="export" title="Export to JSON">
-                                <ExportOutlined onClick={() => downloadJsonFile(board.name, {...board, items})}/>
+                                <ExportOutlined onClick={() => downloadJsonFile(board.name, exportBoardToJson(snapshot, items))}/>
                             </Tooltip>,
                             <Popconfirm
                                 key="delete"
@@ -231,7 +222,7 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
             <Divider/>
             <Row justify="center" gutter={[32, 32]} style={{margin: "unset"}}>
                 {loading && (
-                    <Col span={4}>
+                    <Col span={5}>
                         <Card loading={true}><Card.Meta/></Card>
                     </Col>
                 )}
