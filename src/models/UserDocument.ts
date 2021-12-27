@@ -1,4 +1,4 @@
-import {FirestoreDataConverter} from "@firebase/firestore-types";
+import { FirestoreDataConverter } from "@firebase/firestore-types";
 import firebase from "firebase/compat";
 
 export class UserDocument {
@@ -9,7 +9,7 @@ export class UserDocument {
     constructor(name: string, email: string, photoURL: string) {
         this.displayName = name;
         this.email = email;
-        this.photoURL = photoURL
+        this.photoURL = photoURL;
     }
 }
 
@@ -23,11 +23,14 @@ export const UserDocumentConverter: UserDocumentConverter = {
         email: user.email,
         photoURL: user.photoURL,
     }),
-    fromFirestore: (snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions) => {
+    fromFirestore: (
+        snapshot: firebase.firestore.QueryDocumentSnapshot,
+        options: firebase.firestore.SnapshotOptions
+    ) => {
         const data = snapshot.data(options);
-        return UserDocumentConverter.toUserDocument(data)
+        return UserDocumentConverter.toUserDocument(data);
     },
     toUserDocument: (data) => {
         return new UserDocument(data.displayName, data.email, data.photoURL);
     },
-}
+};

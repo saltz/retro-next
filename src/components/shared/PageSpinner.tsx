@@ -1,5 +1,5 @@
-import {LoadingOutlined} from "@ant-design/icons";
-import {Spin} from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 import React from "react";
 
 interface IProps {
@@ -10,20 +10,24 @@ export const PageSpinner: React.FC<IProps> = (props: IProps): JSX.Element => (
     <>
         <div>
             <Spin
-                indicator={<LoadingOutlined style={{fontSize: props.size ?? 50}} spin/>}
+                indicator={
+                    <LoadingOutlined
+                        style={{ fontSize: props.size ?? 50 }}
+                        spin
+                    />
+                }
                 tip="Loading..."
             />
         </div>
         <style jsx>
             {`
-              div {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-              }
+                div {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                }
             `}
         </style>
     </>
-
 );

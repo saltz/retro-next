@@ -1,9 +1,9 @@
 import React from "react";
-import {Dropdown, Menu, Space} from "antd";
-import {LogoutOutlined, ProjectOutlined} from "@ant-design/icons";
-import firebase from "../utils/firebaseClient";
-import {UserAvatar} from "./shared/UserAvatar";
-import {useRouter} from "next/router";
+import { Dropdown, Menu, Space } from "antd";
+import { LogoutOutlined, ProjectOutlined } from "@ant-design/icons";
+import firebase from "../../utils/firebaseClient";
+import { UserAvatar } from "../shared/UserAvatar";
+import { useRouter } from "next/router";
 
 export const PersonalMenu: React.FC = (): JSX.Element => {
     const router = useRouter();
@@ -19,7 +19,7 @@ export const PersonalMenu: React.FC = (): JSX.Element => {
                 .doc(router.query.id as string)
                 .collection("users")
                 .doc(auth.currentUser.uid)
-                .delete()
+                .delete();
         }
 
         auth.signOut();
@@ -35,7 +35,7 @@ export const PersonalMenu: React.FC = (): JSX.Element => {
             </Menu.Item>
             <Menu.Item key="sign-out" onClick={() => signOut()}>
                 <Space>
-                    <LogoutOutlined/>
+                    <LogoutOutlined />
                     <span>Sign out</span>
                 </Space>
             </Menu.Item>
@@ -52,24 +52,24 @@ export const PersonalMenu: React.FC = (): JSX.Element => {
                     overlayClassName="personal-menu-dropdown"
                 >
                     <div>
-                        <UserAvatar size={40}/>
+                        <UserAvatar size={40} />
                     </div>
                 </Dropdown>
             </div>
             <style jsx>
                 {`
-                  .personal-menu {
-                    position: fixed;
-                    z-index: 999;
-                    top: 30px;
-                    right: 30px;
-                  }
+                    .personal-menu {
+                        position: fixed;
+                        z-index: 999;
+                        top: 30px;
+                        right: 30px;
+                    }
 
-                  .personal-menu:hover {
-                    cursor: pointer;
-                  }
+                    .personal-menu:hover {
+                        cursor: pointer;
+                    }
                 `}
             </style>
         </>
-    )
+    );
 };

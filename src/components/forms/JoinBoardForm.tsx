@@ -1,13 +1,13 @@
 import React from "react";
-import {SubmitHandler} from "react-hook-form";
-import {InputControl} from "./controls/InputControl";
-import {FormBase} from "./FormBase";
-import {object, string} from "yup";
-import {useRouter} from "next/router";
+import { SubmitHandler } from "react-hook-form";
+import { InputControl } from "./controls/InputControl";
+import { FormBase } from "./FormBase";
+import { object, string } from "yup";
+import { useRouter } from "next/router";
 
 type JoinBoardForm = {
-    key: string
-}
+    key: string;
+};
 
 const schema = object({
     key: string().required(),
@@ -27,8 +27,12 @@ export const JoinBoardForm: React.FC = () => {
             schema={schema}
             layout="vertical"
         >
-            <InputControl label="Board key" name="key" itemProps={{required: true}}/>
-            <div style={{height: "88px"}}/>
+            <InputControl
+                label="Board key"
+                name="key"
+                itemProps={{ required: true }}
+            />
+            <div style={{ height: "88px" }} />
         </FormBase>
     );
-}
+};

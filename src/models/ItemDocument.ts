@@ -1,6 +1,6 @@
 import firebase from "firebase/compat";
-import {FirestoreDataConverter} from "@firebase/firestore-types";
-import {UserDocument, UserDocumentConverter} from "./UserDocument";
+import { FirestoreDataConverter } from "@firebase/firestore-types";
+import { UserDocument, UserDocumentConverter } from "./UserDocument";
 
 export class ItemDocument {
     parentId: string;
@@ -10,7 +10,14 @@ export class ItemDocument {
     content: string;
     votes: number;
 
-    constructor(column: string, index: number, user: UserDocument, content: string, votes: number = 0, parentId: string = null) {
+    constructor(
+        column: string,
+        index: number,
+        user: UserDocument,
+        content: string,
+        votes: number = 0,
+        parentId: string = null
+    ) {
         this.parentId = parentId;
         this.column = column;
         this.index = index;
@@ -29,8 +36,18 @@ export const ItemDocumentConverter: FirestoreDataConverter<ItemDocument> = {
         content: item.content,
         votes: item.votes,
     }),
-    fromFirestore: (snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions) => {
+    fromFirestore: (
+        snapshot: firebase.firestore.QueryDocumentSnapshot,
+        options: firebase.firestore.SnapshotOptions
+    ) => {
         const data = snapshot.data(options);
-        return new ItemDocument(data.column, data.index, UserDocumentConverter.toUserDocument(data.user) , data.content, data.votes, data.parentId);
+        return new ItemDocument(
+            data.column,
+            data.index,
+            UserDocumentConverter.toUserDocument(data.user),
+            data.content,
+            data.votes,
+            data.parentId
+        );
     },
-}
+};

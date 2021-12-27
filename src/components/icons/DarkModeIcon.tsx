@@ -2,8 +2,12 @@ import Icon from "@ant-design/icons/lib";
 import * as React from "react";
 
 const DarkModeSvg: React.FC = (): JSX.Element => (
-    <svg height="1.2em" viewBox="0 0 512.002 512.002" width="1.5em"
-         xmlns="http://www.w3.org/2000/svg">
+    <svg
+        height="1.2em"
+        viewBox="0 0 512.002 512.002"
+        width="1.5em"
+        xmlns="http://www.w3.org/2000/svg"
+    >
         <g>
             <path
                 d="m288.489 512.002c-68.829 0-133.538-26.804-182.206-75.473-48.669-48.669-75.472-113.378-75.472-182.207 0-61.328 21.914-120.744 61.705-167.304 39.343-46.036 93.733-76.866 153.149-86.811 6.419-1.079 12.791 2.108 15.789 7.881 2.997 5.773 1.933 12.818-2.635 17.448-38.912 39.436-60.341 91.655-60.341 147.041 0 115.449 93.924 209.374 209.373 209.374 28.886 0 56.873-5.783 83.185-17.189 5.975-2.588 12.939-1.029 17.234 3.862 4.298 4.892 4.949 11.998 1.611 17.589-22.462 37.628-54.362 69.141-92.251 91.129-39.068 22.676-83.725 34.66-129.141 34.66z"
@@ -25,4 +29,6 @@ const DarkModeSvg: React.FC = (): JSX.Element => (
     </svg>
 );
 
-export const DarkModeIcon: React.FC<any> = (props: any) : JSX.Element => <Icon component={DarkModeSvg} {...props}/>;
+export const DarkModeIcon: React.FC<any> = (props: any): JSX.Element => (
+    <Icon component={DarkModeSvg} {...props} />
+);

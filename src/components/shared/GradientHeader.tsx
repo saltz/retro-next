@@ -1,4 +1,4 @@
-import React, {CSSProperties} from "react";
+import React, { CSSProperties } from "react";
 
 interface IProps {
     text: string;
@@ -9,20 +9,22 @@ interface IProps {
     style?: CSSProperties;
 }
 
-export const GradientHeader: React.FC<IProps> = (props: IProps): JSX.Element => (
+export const GradientHeader: React.FC<IProps> = (
+    props: IProps
+): JSX.Element => (
     <>
-      <span className={props.className} style={props.style}>
-        {props.text}
-    </span>
+        <span className={props.className} style={props.style}>
+            {props.text}
+        </span>
         <style jsx>
             {`
-              span {
-                font-size: ${props.fontSize ?? ""};
-                font-weight: ${props.fontWeight ?? ""};
-                background: linear-gradient(${props.gradient});
-                background-clip: text;
-                color: transparent !important;
-              }
+                span {
+                    font-size: ${props.fontSize ?? ""};
+                    font-weight: ${props.fontWeight ?? ""};
+                    background: linear-gradient(${props.gradient});
+                    background-clip: text;
+                    color: transparent !important;
+                }
             `}
         </style>
     </>

@@ -21,8 +21,11 @@ export const VoteDocumentConverter: FirestoreDataConverter<VoteDocument> = {
         itemId: vote.itemId,
         state: vote.state,
     }),
-    fromFirestore: (snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions) => {
+    fromFirestore: (
+        snapshot: firebase.firestore.QueryDocumentSnapshot,
+        options: firebase.firestore.SnapshotOptions
+    ) => {
         const data = snapshot.data(options);
         return new VoteDocument(data.userId, data.itemId, data.state);
-    }
-}
+    },
+};

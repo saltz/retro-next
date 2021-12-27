@@ -1,7 +1,7 @@
 import firebase from "firebase/compat";
 import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
-import {Moment, unix} from "moment";
-import {number, object, string} from "yup";
+import { Moment, unix } from "moment";
+import { number, object, string } from "yup";
 
 export class BoardDocument {
     name: string;
@@ -9,7 +9,12 @@ export class BoardDocument {
     maximumVotes: number;
     date: Moment;
 
-    constructor(name: string, owner: string, maximumVotes: number, date: Moment) {
+    constructor(
+        name: string,
+        owner: string,
+        maximumVotes: number,
+        date: Moment
+    ) {
         this.name = name;
         this.owner = owner;
         this.maximumVotes = maximumVotes;
@@ -19,7 +24,7 @@ export class BoardDocument {
 
 export const boardDocumentValidationSchema = object({
     name: string().required(),
-    maximumVotes: number()
+    maximumVotes: number(),
 });
 
 export const BoardDocumentConverter: FirestoreDataConverter<BoardDocument> = {
@@ -29,9 +34,17 @@ export const BoardDocumentConverter: FirestoreDataConverter<BoardDocument> = {
         maximumVotes: board.maximumVotes,
         date: board.date.unix(),
     }),
-    fromFirestore: (snapshot: firebase.firestore.QueryDocumentSnapshot, options: firebase.firestore.SnapshotOptions) => {
+    fromFirestore: (
+        snapshot: firebase.firestore.QueryDocumentSnapshot,
+        options: firebase.firestore.SnapshotOptions
+    ) => {
         const data = snapshot.data(options);
 
-        return new BoardDocument(data.name, data.owner, data.maximumVotes, unix(data.date));
-    }
-}
+        return new BoardDocument(
+            data.name,
+            data.owner,
+            data.maximumVotes,
+            unix(data.date)
+        );
+    },
+};

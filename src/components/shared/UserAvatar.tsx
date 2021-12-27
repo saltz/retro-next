@@ -1,9 +1,9 @@
 import React from "react";
-import {createHash} from "crypto";
-import {Avatar, Tooltip} from "antd";
+import { createHash } from "crypto";
+import { Avatar, Tooltip } from "antd";
 import firebase from "../../utils/firebaseClient";
-import {UserDocument} from "../../models/UserDocument";
-import {TooltipPlacement} from "antd/lib/tooltip";
+import { UserDocument } from "../../models/UserDocument";
+import { TooltipPlacement } from "antd/lib/tooltip";
 
 interface IProps {
     size: number;
@@ -22,19 +22,26 @@ export const UserAvatar: React.FC<IProps> = (props: IProps): JSX.Element => {
         }
 
         if (user?.email) {
-            return `https://www.gravatar.com/avatar/${createHash("md5").update(user.email).digest("hex")}?d=identicon`;
+            return `https://www.gravatar.com/avatar/${createHash("md5")
+                .update(user.email)
+                .digest("hex")}?d=identicon`;
         }
 
         return;
     };
 
     return (
-        <Tooltip title={props.tooltip ? user.displayName : undefined} placement={props.tooltipPlacement ?? "bottom"}>
+        <Tooltip
+            title={props.tooltip ? user.displayName : undefined}
+            placement={props.tooltipPlacement ?? "bottom"}
+        >
             <Avatar
-                style={{border: props.border ? "3px solid #00c600" : undefined}}
+                style={{
+                    border: props.border ? "3px solid #00c600" : undefined,
+                }}
                 size={props.size}
                 src={getUserImageUrl()}
             />
         </Tooltip>
     );
-}
+};

@@ -2,8 +2,8 @@ import "firebaseui/dist/firebaseui.css";
 
 import * as firebaseui from "firebaseui";
 import firebase from "../../utils/firebaseClient";
-import {Col, Row} from "antd";
-import {GradientHeader} from "../shared/GradientHeader";
+import { Col, Row } from "antd";
+import { GradientHeader } from "../shared/GradientHeader";
 import React from "react";
 import FirebaseAuth from "../FirebaseAuth";
 
@@ -30,23 +30,25 @@ export const SignInForm: React.FC = (): JSX.Element => (
         </Row>
         <Row justify="center">
             <Col>
-                <FirebaseAuth uiConfig={config} firebaseAuth={firebase.auth()}/>
+                <FirebaseAuth
+                    uiConfig={config}
+                    firebaseAuth={firebase.auth()}
+                />
             </Col>
         </Row>
 
         <style jsx>
             {`
-              :global(.app-title) {
-                margin: 80px 0 20vh !important;
-              }
+                :global(.app-title) {
+                    margin: 80px 0 20vh !important;
+                }
 
-              .sign-in-form {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
+                .sign-in-form {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
             `}
         </style>
     </>
-
 );

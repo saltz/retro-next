@@ -80,18 +80,20 @@ export default class FirebaseAuth extends React.Component<Props, State> {
             this.setState((oldState, props) => {
                 // Get or Create a firebaseUI instance.
                 const newWidge =
-                    firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(props.firebaseAuth);
+                    firebaseui.auth.AuthUI.getInstance() ||
+                    new firebaseui.auth.AuthUI(props.firebaseAuth);
                 if (props.uiConfig.signInFlow === "popup") {
                     newWidge.reset();
                 }
 
                 // We track the auth state to reset firebaseUi if the user signs out.
-                const unregisterAuthObserver = this.props.firebaseAuth.onAuthStateChanged((user) => {
-                    if (!user && this.state.userSignedIn) {
-                        this.state.firebaseUiWidget?.reset();
-                    }
-                    this.setState({ userSignedIn: !!user });
-                });
+                const unregisterAuthObserver =
+                    this.props.firebaseAuth.onAuthStateChanged((user) => {
+                        if (!user && this.state.userSignedIn) {
+                            this.state.firebaseUiWidget?.reset();
+                        }
+                        this.setState({ userSignedIn: !!user });
+                    });
 
                 // Trigger the callback if any was set.
                 if (this.props.uiCallback) {
@@ -104,7 +106,7 @@ export default class FirebaseAuth extends React.Component<Props, State> {
                 // Return the new state
                 return {
                     firebaseUiWidget: newWidge,
-                    unregisterAuthObserver
+                    unregisterAuthObserver,
                 };
             });
         });

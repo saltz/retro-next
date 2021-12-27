@@ -1,6 +1,11 @@
-import {FieldPath, FieldValues, useController, UseControllerReturn} from "react-hook-form";
-import {ReactNode} from "react";
-import {Form, FormItemProps} from "antd";
+import {
+    FieldPath,
+    FieldValues,
+    useController,
+    UseControllerReturn,
+} from "react-hook-form";
+import { ReactNode } from "react";
+import { Form, FormItemProps } from "antd";
 
 export interface IFormControlBase<T extends FieldValues> {
     name: FieldPath<T>;
@@ -13,7 +18,7 @@ interface IProps<T extends FieldValues> extends IFormControlBase<T> {
 }
 
 export const FormControlBase = <T extends FieldValues>(props: IProps<T>) => {
-    const controller = useController<T>({ name: props?.name, });
+    const controller = useController<T>({ name: props?.name });
 
     return (
         <Form.Item
@@ -24,5 +29,5 @@ export const FormControlBase = <T extends FieldValues>(props: IProps<T>) => {
         >
             {props.render(controller)}
         </Form.Item>
-    )
+    );
 };

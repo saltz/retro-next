@@ -1,14 +1,14 @@
-import React, {useState} from "react";
-import {BoardDocument} from "../models/BoardDocument";
-import {Col, Divider, Row, Space, Tooltip} from "antd";
-import {CurrentUsers} from "./CurrentUsers";
-import {Column} from "./Column";
-import {useCollectionData} from "react-firebase-hooks/firestore";
-import {VoteDocument} from "../models/VoteDocument";
-import firebase from "../utils/firebaseClient";
-import {DragDropContext, DropResult} from "react-beautiful-dnd";
-import {GradientHeader} from "./shared/GradientHeader";
-import {CheckOutlined, CopyOutlined} from "@ant-design/icons";
+import React, { useState } from "react";
+import { BoardDocument } from "../../models/BoardDocument";
+import { Col, Divider, Row, Space, Tooltip } from "antd";
+import { CurrentUsers } from "./CurrentUsers";
+import { Column } from "../column/Column";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { VoteDocument } from "../../models/VoteDocument";
+import firebase from "../../utils/firebaseClient";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { GradientHeader } from "../shared/GradientHeader";
+import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
 
 interface IProps {
     id: string;
@@ -27,21 +27,19 @@ export const VoteContext = React.createContext<IVoteContext>({
 
 export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
     const currentUser = firebase.auth().currentUser;
-    const query = firebase
-        .firestore()
-        .collection("boards")
-        .doc(props.id);
+    const query = firebase.firestore().collection("boards").doc(props.id);
 
     const [currentVotes] = useCollectionData<VoteDocument>(
-        query
-            .collection("votes")
-            .where("userId", "==", currentUser.uid)
+        query.collection("votes").where("userId", "==", currentUser.uid)
     );
     const [keyCopied, setKeyCopied] = useState<boolean>(false);
 
     const onDragEnd = async (result: DropResult) => {
         if (result.combine) {
-            const votes = await query.collection("votes").where("itemId", "==", result.draggableId).get();
+            const votes = await query
+                .collection("votes")
+                .where("itemId", "==", result.draggableId)
+                .get();
 
             for (const vote of votes.docs) {
                 await query.collection("votes").doc(vote.id).delete();
@@ -56,10 +54,10 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
         }
 
         if (result.destination) {
-            await query
-                .collection("items")
-                .doc(result.draggableId)
-                .update({column: result.destination.droppableId, index: result.destination.index});
+            await query.collection("items").doc(result.draggableId).update({
+                column: result.destination.droppableId,
+                index: result.destination.index,
+            });
         }
     };
 
@@ -67,40 +65,49 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
         <VoteContext.Provider
             value={{
                 currentVotes: currentVotes,
-                maximumAmountOfVotes: props.board.maximumVotes
+                maximumAmountOfVotes: props.board.maximumVotes,
             }}
         >
             <DragDropContext onDragEnd={onDragEnd}>
-                <div style={{padding: "0 30px 0"}}>
+                <div style={{ padding: "0 30px 0" }}>
                     <Row justify="center">
                         <Space>
                             <GradientHeader
                                 text={props.board.name}
                                 fontSize="48px"
-                                gradient={"140deg, rgba(80,227,194,1) 25%, rgba(95,24,175,1) 83%"}
+                                gradient={
+                                    "140deg, rgba(80,227,194,1) 25%, rgba(95,24,175,1) 83%"
+                                }
                             />
-                            <Tooltip
-                                title="Copy board key"
-                                placement="right"
-                            >
+                            <Tooltip title="Copy board key" placement="right">
                                 {keyCopied ? (
-                                    <CheckOutlined style={{fontSize: "20px"}} />
+                                    <CheckOutlined
+                                        style={{ fontSize: "20px" }}
+                                    />
                                 ) : (
                                     <CopyOutlined
-                                        style={{fontSize: "20px", cursor: "pointer"}}
+                                        style={{
+                                            fontSize: "20px",
+                                            cursor: "pointer",
+                                        }}
                                         onClick={() => {
-                                            navigator.clipboard.writeText(props.id);
+                                            navigator.clipboard.writeText(
+                                                props.id
+                                            );
                                             setKeyCopied(true);
-                                            setTimeout(() => setKeyCopied(false), 1000);
+                                            setTimeout(
+                                                () => setKeyCopied(false),
+                                                1000
+                                            );
                                         }}
                                     />
                                 )}
                             </Tooltip>
                         </Space>
                     </Row>
-                    <Divider/>
-                    <Row justify="center" style={{marginBottom: "20px"}}>
-                        <CurrentUsers boardId={props.id}/>
+                    <Divider />
+                    <Row justify="center" style={{ marginBottom: "20px" }}>
+                        <CurrentUsers boardId={props.id} />
                     </Row>
                     <Row justify="center" gutter={[32, 0]}>
                         <Col lg={8}>

@@ -1,5 +1,5 @@
-import {Input} from "antd";
-import React, {useState} from "react";
+import { Input } from "antd";
+import React, { useState } from "react";
 
 interface IProps {
     onPressEnter: (value: string) => void;
@@ -16,7 +16,7 @@ export const ItemTextArea: React.FC<IProps> = (props: IProps): JSX.Element => {
             placeholder="Press Enter to add item"
             value={value}
             defaultValue={props.defaultValue}
-            style={{margin: props.margin}}
+            style={{ margin: props.margin }}
             onChange={(event) => setValue(event.target.value)}
             onKeyPress={(event) => {
                 if (event.key === "Enter") {
