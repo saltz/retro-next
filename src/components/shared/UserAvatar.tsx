@@ -21,13 +21,9 @@ export const UserAvatar: React.FC<IProps> = (props: IProps): JSX.Element => {
             return user.photoURL;
         }
 
-        if (user?.email) {
-            return `https://www.gravatar.com/avatar/${createHash("md5")
-                .update(user.email)
-                .digest("hex")}?d=identicon`;
-        }
-
-        return;
+        return `https://www.gravatar.com/avatar/${createHash("md5")
+            .update(user.email ?? "")
+            .digest("hex")}?d=identicon`;
     };
 
     return (
