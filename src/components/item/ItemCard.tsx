@@ -138,7 +138,7 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
             >
                 <Row justify="space-between">
                     <Card.Meta
-                        title={currentUser.displayName}
+                        title={props.item.user.displayName}
                         avatar={
                             <UserAvatar
                                 size={35}
