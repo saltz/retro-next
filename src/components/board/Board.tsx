@@ -8,7 +8,10 @@ import { VoteDocument } from "../../models/VoteDocument";
 import firebase from "../../utils/firebaseClient";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { GradientHeader } from "../shared/GradientHeader";
-import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
+import { CameraOutlined, CheckOutlined, CopyOutlined } from "@ant-design/icons";
+import html2canvas from "html2canvas";
+import moment from "moment";
+import { downloadFile } from "../../utils/exportingUtils";
 
 interface IProps {
     id: string;
@@ -61,6 +64,18 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
         }
     };
 
+    const takeBoardScreenshot = async (): Promise<void> => {
+        const canvas = await html2canvas(document.getElementById("board"), {
+            allowTaint: true,
+            useCORS: true,
+            backgroundColor: window
+                .getComputedStyle(document.body, null)
+                .getPropertyValue("background-color"),
+        });
+
+        canvas.toBlob((blob) => downloadFile(props.board.name, ".png", blob));
+    };
+
     return (
         <VoteContext.Provider
             value={{
@@ -106,10 +121,20 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
                         </Space>
                     </Row>
                     <Divider />
-                    <Row justify="center" style={{ marginBottom: "20px" }}>
+                    <Row
+                        justify="space-between"
+                        style={{ marginBottom: "20px" }}
+                    >
+                        <Tooltip
+                            title="Take a full board screenshot"
+                            placement="right"
+                        >
+                            <CameraOutlined onClick={takeBoardScreenshot} />
+                        </Tooltip>
                         <CurrentUsers boardId={props.id} />
+                        <div />
                     </Row>
-                    <Row justify="center" gutter={[32, 0]}>
+                    <Row id="board" justify="center" gutter={[32, 0]}>
                         <Col lg={8}>
                             <Column
                                 boardId={props.id}

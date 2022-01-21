@@ -62,7 +62,7 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
         props.itemQuery.doc(props.id).delete();
 
         for (const child of childrenSnapshot?.docs) {
-            props.itemQuery.doc(child.id).delete();
+            props.itemQuery.doc(child.id).update({ parentId: null });
         }
 
         voteQuery.delete();
@@ -130,6 +130,8 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
         voteContext.currentVotes?.length >= voteContext.maximumAmountOfVotes &&
         !voteContext.currentVotes?.find((i) => i.itemId === props.id);
 
+    const isOwner: boolean = currentUser.uid === props.item.user.uid;
+
     return (
         <>
             <Card
@@ -154,19 +156,25 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
                                 {props.item.votes > 0 && "+"}
                                 {props.item.votes}
                             </Tag>
-                            <EditOutlined
-                                className="item-card-edit"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => setEditing(!editing)}
-                            />
-                            <Popconfirm
-                                title="Are you sure you want to delete this item?"
-                                onConfirm={deleteItem}
-                                okText="Yes"
-                                cancelText="No"
-                            >
-                                <DeleteOutlined style={{ color: "#df4040" }} />
-                            </Popconfirm>
+                            {isOwner && (
+                                <>
+                                    <EditOutlined
+                                        className="item-card-edit"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => setEditing(!editing)}
+                                    />
+                                    <Popconfirm
+                                        title="Are you sure you want to delete this item?"
+                                        onConfirm={deleteItem}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <DeleteOutlined
+                                            style={{ color: "#df4040" }}
+                                        />
+                                    </Popconfirm>
+                                </>
+                            )}
                         </Space>
                     ) : (
                         <Popconfirm

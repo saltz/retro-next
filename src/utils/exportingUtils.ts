@@ -7,8 +7,16 @@ import QuerySnapshot = firebase.firestore.QuerySnapshot;
 
 export const downloadJsonFile = (name: string, data: object): void => {
     const blob = new Blob([JSON.stringify(data)], { type: "text/json" });
+    downloadFile(name, "json", blob);
+};
+
+export const downloadFile = (
+    name: string,
+    extension: string,
+    blob: Blob
+): void => {
     const a = document.createElement("a");
-    a.download = `${name} export ${moment().format("DD-MM-YYYY")}.json`;
+    a.download = `${name} ${moment().format("DD-MM-YYYY")}.${extension}`;
     a.href = window.URL.createObjectURL(blob);
     const clickEvt = new MouseEvent("click", {
         view: window,
