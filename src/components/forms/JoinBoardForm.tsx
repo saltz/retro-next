@@ -1,9 +1,9 @@
+import { useRouter } from "next/router";
 import React from "react";
 import { SubmitHandler } from "react-hook-form";
+import { object, string } from "yup";
 import { InputControl } from "./controls/InputControl";
 import { FormBase } from "./FormBase";
-import { object, string } from "yup";
-import { useRouter } from "next/router";
 
 type JoinBoardForm = {
     key: string;

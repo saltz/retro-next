@@ -1,4 +1,10 @@
-import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
+import {
+    DeleteOutlined,
+    DislikeOutlined,
+    EditOutlined,
+    LikeOutlined,
+    RollbackOutlined,
+} from "@ant-design/icons";
 import {
     Card,
     Popconfirm,
@@ -9,21 +15,15 @@ import {
     Tag,
     Tooltip,
 } from "antd";
-import { VoteDocument, VoteDocumentConverter } from "../../models/VoteDocument";
-import { UserAvatar } from "../shared/UserAvatar";
-import {
-    DeleteOutlined,
-    DislikeOutlined,
-    EditOutlined,
-    LikeOutlined,
-    RollbackOutlined,
-} from "@ant-design/icons";
-import { ItemTextArea } from "./ItemTextArea";
 import React, { CSSProperties, useContext, useState } from "react";
-import { ItemDocument } from "../../models/ItemDocument";
-import firebase from "../../utils/firebaseClient";
 import { DraggableProvidedDragHandleProps } from "react-beautiful-dnd";
+import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
+import { ItemDocument } from "../../models/ItemDocument";
+import { VoteDocument, VoteDocumentConverter } from "../../models/VoteDocument";
+import firebase from "../../utils/firebaseClient";
 import { VoteContext } from "../board/Board";
+import { UserAvatar } from "../shared/UserAvatar";
+import { ItemTextArea } from "./ItemTextArea";
 
 interface IProps {
     id: string;

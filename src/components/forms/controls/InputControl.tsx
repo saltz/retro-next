@@ -1,6 +1,6 @@
-import { FormControlBase, IFormControlBase } from "./FormControlBase";
 import { Input } from "antd";
 import { FieldValues } from "react-hook-form";
+import { FormControlBase, IFormControlBase } from "./FormControlBase";
 
 interface IProps<T extends FieldValues> extends IFormControlBase<T> {}
 

@@ -1,7 +1,8 @@
-import { ItemDocument } from "../models/ItemDocument";
+import firebase from "firebase/compat";
 import moment from "moment";
 import { BoardDocument } from "../models/BoardDocument";
-import firebase from "firebase/compat";
+import { ColumnDocument } from "../models/ColumnDocument";
+import { ItemDocument } from "../models/ItemDocument";
 import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
 import QuerySnapshot = firebase.firestore.QuerySnapshot;
 
@@ -29,15 +30,18 @@ export const downloadFile = (
 
 export const exportBoardToJson = (
     board: QueryDocumentSnapshot<BoardDocument>,
-    itemSnapshot: QuerySnapshot<ItemDocument>
+    itemSnapshot: QuerySnapshot<ItemDocument>,
+    columns: QuerySnapshot<ColumnDocument>
 ): object => ({
     ...board.data(),
     owner: undefined,
-    items: exportItemsToJson(itemSnapshot),
+    columns: columns.docs.map((column) => column.data().title),
+    items: exportItemsToJson(itemSnapshot, columns),
 });
 
 export const exportItemsToJson = (
     snapshot: QuerySnapshot<ItemDocument>,
+    columns: QuerySnapshot<ColumnDocument>,
     parentId: string = null
 ): object[] => {
     return snapshot.docs
@@ -45,6 +49,10 @@ export const exportItemsToJson = (
         .map((snap) => ({
             ...snap.data(),
             parentId: undefined,
-            children: exportItemsToJson(snapshot, snap.id),
+            column: columns.docs
+                .find((column) => column.id === snap.data().column)
+                .data().title,
+            user: snap.data().user.displayName,
+            children: exportItemsToJson(snapshot, columns, snap.id),
         }));
 };

@@ -1,11 +1,11 @@
+import { Form, FormItemProps } from "antd";
+import { ReactNode } from "react";
 import {
     FieldPath,
     FieldValues,
     useController,
     UseControllerReturn,
 } from "react-hook-form";
-import { ReactNode } from "react";
-import { Form, FormItemProps } from "antd";
 
 export interface IFormControlBase<T extends FieldValues> {
     name: FieldPath<T>;
@@ -20,10 +20,17 @@ interface IProps<T extends FieldValues> extends IFormControlBase<T> {
 export const FormControlBase = <T extends FieldValues>(props: IProps<T>) => {
     const controller = useController<T>({ name: props?.name });
 
+    const helpText = controller.fieldState.error?.message.includes(".")
+        ? controller.fieldState.error?.message.substring(
+              controller.fieldState.error?.message.lastIndexOf(".") + 1,
+              controller.fieldState.error?.message.length
+          )
+        : controller.fieldState.error?.message;
+
     return (
         <Form.Item
             validateStatus={controller.fieldState.error ? "error" : ""}
-            help={controller.fieldState.error?.message}
+            help={helpText}
             label={props.label}
             {...props.itemProps}
         >

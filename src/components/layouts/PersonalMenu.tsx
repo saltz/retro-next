@@ -1,9 +1,13 @@
-import React from "react";
+import {
+    HomeOutlined,
+    LogoutOutlined,
+    ProjectOutlined,
+} from "@ant-design/icons";
 import { Dropdown, Menu, Space } from "antd";
-import { LogoutOutlined, ProjectOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
+import React from "react";
 import firebase from "../../utils/firebaseClient";
 import { UserAvatar } from "../shared/UserAvatar";
-import { useRouter } from "next/router";
 
 export const PersonalMenu: React.FC = (): JSX.Element => {
     const router = useRouter();
@@ -27,6 +31,12 @@ export const PersonalMenu: React.FC = (): JSX.Element => {
 
     const dropdownMenu = (
         <Menu>
+            <Menu.Item key="home" onClick={() => router.push("/")}>
+                <Space>
+                    <HomeOutlined />
+                    <span>Home</span>
+                </Space>
+            </Menu.Item>
             <Menu.Item key="boards" onClick={() => router.push("/boards")}>
                 <Space>
                     <ProjectOutlined />

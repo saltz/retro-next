@@ -1,10 +1,10 @@
+import { NextPage } from "next";
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from "../utils/firebaseClient";
+import { SignInForm } from "./forms/SignInForm";
 import { AppLayout } from "./layouts/AppLayout";
 import { PageSpinner } from "./shared/PageSpinner";
-import { SignInForm } from "./forms/SignInForm";
-import { NextPage } from "next";
 
 export interface IPageProps {
     user: firebase.User;

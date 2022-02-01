@@ -1,18 +1,18 @@
+import { Button, Result } from "antd";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { PageSpinner } from "../../components/shared/PageSpinner";
-import { Button, Result } from "antd";
-import firebase from "../../utils/firebaseClient";
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
-import {
-    BoardDocument,
-    BoardDocumentConverter,
-} from "../../models/BoardDocument";
+import { Board } from "../../components/board/Board";
+import { PageSpinner } from "../../components/shared/PageSpinner";
 import {
     IPageProps,
     withAuthentication,
 } from "../../components/withAuthentication";
-import { Board } from "../../components/board/Board";
+import {
+    BoardDocument,
+    BoardDocumentConverter,
+} from "../../models/BoardDocument";
+import firebase from "../../utils/firebaseClient";
 
 const BoardPage: NextPage<IPageProps> = () => {
     const router = useRouter();

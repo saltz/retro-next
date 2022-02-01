@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { UserAvatar } from "../shared/UserAvatar";
 import { Avatar, Skeleton } from "antd";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { UserDocument, UserDocumentConverter } from "../../models/UserDocument";
 import { useRouter } from "next/router";
-import firebase from "../../utils/firebaseClient";
+import React, { useEffect } from "react";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import { BoardDocumentConverter } from "../../models/BoardDocument";
+import { UserDocument, UserDocumentConverter } from "../../models/UserDocument";
+import firebase from "../../utils/firebaseClient";
+import { UserAvatar } from "../shared/UserAvatar";
 
 interface IProps {
     boardId: string;

@@ -1,32 +1,33 @@
-import React, { useState } from "react";
-import { NextPage } from "next";
-import { Button, Divider, Popconfirm, Row, Space, Tooltip } from "antd";
-import { GradientHeader } from "../../components/shared/GradientHeader";
-import firebase from "../../utils/firebaseClient";
-import { useCollection } from "react-firebase-hooks/firestore";
-import {
-    BoardDocument,
-    BoardDocumentConverter,
-} from "../../models/BoardDocument";
 import {
     DeleteOutlined,
     ExportOutlined,
     HomeOutlined,
     LoadingOutlined,
 } from "@ant-design/icons";
+import { Button, Divider, Popconfirm, Row, Space, Tooltip } from "antd";
+import { NextPage } from "next";
 import Link from "next/link";
-import { ItemDocumentConverter } from "../../models/ItemDocument";
+import React, { useState } from "react";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { BoardCard } from "../../components/board/BoardCard";
+import { LoadingBoardCard } from "../../components/board/LoadingBoardCard";
+import { GradientHeader } from "../../components/shared/GradientHeader";
 import {
     IPageProps,
     withAuthentication,
 } from "../../components/withAuthentication";
 import {
+    BoardDocument,
+    BoardDocumentConverter,
+} from "../../models/BoardDocument";
+import { ColumnDocumentConverter } from "../../models/ColumnDocument";
+import { ItemDocumentConverter } from "../../models/ItemDocument";
+import {
     downloadJsonFile,
     exportBoardToJson,
 } from "../../utils/exportingUtils";
+import firebase from "../../utils/firebaseClient";
 import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
-import { BoardCard } from "../../components/board/BoardCard";
-import { LoadingBoardCard } from "../../components/board/LoadingBoardCard";
 
 const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
     const [boards, loading] = useCollection<BoardDocument>(
@@ -50,15 +51,22 @@ const Index: NextPage<IPageProps> = (props: IPageProps): JSX.Element => {
         const data: object[] = [];
 
         for (const board of boards.docs) {
-            const itemsSnapshot = await firebase
+            const query = firebase
                 .firestore()
                 .collection("boards")
-                .doc(board.id)
+                .doc(board.id);
+
+            const itemsSnapshot = await query
                 .collection("items")
                 .withConverter(ItemDocumentConverter)
                 .get();
 
-            data.push(exportBoardToJson(board, itemsSnapshot));
+            const columnsSnapshot = await query
+                .collection("columns")
+                .withConverter(ColumnDocumentConverter)
+                .get();
+
+            data.push(exportBoardToJson(board, itemsSnapshot, columnsSnapshot));
         }
 
         downloadJsonFile("all boards", data);

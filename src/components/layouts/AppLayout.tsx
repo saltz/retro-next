@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
-import Link from "next/link";
 import { GithubOutlined } from "@ant-design/icons";
-import { PersonalMenu } from "./PersonalMenu";
+import Link from "next/link";
+import React, { ReactNode } from "react";
 import firebase from "../../utils/firebaseClient";
+import { PersonalMenu } from "./PersonalMenu";
 import { ThemeSwitch } from "./ThemeSwitch";
 
 interface IProps {

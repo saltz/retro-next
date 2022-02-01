@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
 import { Switch } from "antd";
+import { parseCookies, setCookie } from "nookies";
+import React, { useEffect, useState } from "react";
 import { DarkModeIcon } from "../icons/DarkModeIcon";
 import { LightModeIcon } from "../icons/LightModeIcon";
-import { parseCookies, setCookie } from "nookies";
 
 interface IProps {}
 

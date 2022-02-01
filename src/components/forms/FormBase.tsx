@@ -1,17 +1,19 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Form, Row } from "antd";
+import { FormLayout } from "antd/es/form/Form";
+import React, { ReactNode } from "react";
 import {
     FieldValues,
-    useForm,
     FormProvider,
     SubmitHandler,
+    UnpackNestedValue,
+    useForm,
 } from "react-hook-form";
-import React, { ReactNode } from "react";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormLayout } from "antd/es/form/Form";
 import { DefaultValues } from "react-hook-form/dist/types/form";
 
 interface IProps<T extends FieldValues> {
-    children: ReactNode;
+    children(values: UnpackNestedValue<T>, errors: any): ReactNode;
+
     onSubmit: SubmitHandler<T>;
     schema: any;
     defaultValues?: DefaultValues<T>;
@@ -32,7 +34,7 @@ export const FormBase = <T extends FieldValues>(props: IProps<T>) => {
                 onSubmitCapture={methods.handleSubmit(props.onSubmit)}
                 layout={props.layout}
             >
-                {props.children}
+                {props.children(methods.getValues(), methods.formState.errors)}
                 {!props.hideSubmitButton && (
                     <Row justify="end" align="bottom">
                         <Button

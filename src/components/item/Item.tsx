@@ -1,11 +1,11 @@
 import React from "react";
-import { ItemDocument } from "../../models/ItemDocument";
-import firebase from "../../utils/firebaseClient";
 import {
     Draggable,
     DraggableProvided,
     DraggableStateSnapshot,
 } from "react-beautiful-dnd";
+import { ItemDocument } from "../../models/ItemDocument";
+import firebase from "../../utils/firebaseClient";
 import { ItemCard } from "./ItemCard";
 
 interface IProps {

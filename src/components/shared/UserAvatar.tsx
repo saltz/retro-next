@@ -1,9 +1,9 @@
-import React from "react";
-import { createHash } from "crypto";
 import { Avatar, Tooltip } from "antd";
-import firebase from "../../utils/firebaseClient";
-import { UserDocument } from "../../models/UserDocument";
 import { TooltipPlacement } from "antd/lib/tooltip";
+import { createHash } from "crypto";
+import React from "react";
+import { UserDocument } from "../../models/UserDocument";
+import firebase from "../../utils/firebaseClient";
 
 interface IProps {
     size: number;

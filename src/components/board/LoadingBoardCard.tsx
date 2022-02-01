@@ -1,5 +1,5 @@
-import React from "react";
 import { Card, Col } from "antd";
+import React from "react";
 
 export const LoadingBoardCard: React.FC = (): JSX.Element => (
     <Col span={5}>

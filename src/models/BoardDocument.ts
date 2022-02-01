@@ -1,7 +1,7 @@
 import firebase from "firebase/compat";
-import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
 import { Moment, unix } from "moment";
-import { number, object, string } from "yup";
+import { array, number, object, string } from "yup";
+import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
 
 export class BoardDocument {
     name: string;
@@ -25,6 +25,9 @@ export class BoardDocument {
 export const boardDocumentValidationSchema = object({
     name: string().required(),
     maximumVotes: number(),
+    columns: array()
+        .of(object({ title: string().required() }))
+        .min(1, "The board needs at least one column"),
 });
 
 export const BoardDocumentConverter: FirestoreDataConverter<BoardDocument> = {

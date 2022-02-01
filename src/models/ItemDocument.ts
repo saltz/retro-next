@@ -1,5 +1,5 @@
-import firebase from "firebase/compat";
 import { FirestoreDataConverter } from "@firebase/firestore-types";
+import firebase from "firebase/compat";
 import { UserDocument, UserDocumentConverter } from "./UserDocument";
 
 export class ItemDocument {
