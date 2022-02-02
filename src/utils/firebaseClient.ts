@@ -1,5 +1,4 @@
 import firebase from "firebase/compat/app";
-import "firebase/compat/app-check";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
@@ -14,10 +13,6 @@ const config = {
 
 if (!firebase.apps.length) {
     firebase.initializeApp(config);
-
-    if (window && document) {
-        firebase.appCheck().activate(process.env.NEXT_PUBLIC_CAPTCHA_KEY, true);
-    }
 }
 
 export default firebase;
