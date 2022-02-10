@@ -1,4 +1,10 @@
-import { CameraOutlined, CheckOutlined, CopyOutlined } from "@ant-design/icons";
+import {
+    CameraOutlined,
+    CheckOutlined,
+    CopyOutlined,
+    ExportOutlined,
+    SortDescendingOutlined,
+} from "@ant-design/icons";
 import { Col, Divider, Row, Space, Tooltip } from "antd";
 import html2canvas from "html2canvas";
 import React, { useState } from "react";
@@ -9,14 +15,22 @@ import {
     DropResult,
 } from "react-beautiful-dnd";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { BoardDocument } from "../../models/BoardDocument";
+import {
+    BoardDocument,
+    BoardDocumentConverter,
+} from "../../models/BoardDocument";
 import {
     ColumnDocument,
     ColumnDocumentConverter,
 } from "../../models/ColumnDocument";
-import { ItemDocumentConverter } from "../../models/ItemDocument";
+import { ItemDocument, ItemDocumentConverter } from "../../models/ItemDocument";
 import { VoteDocument } from "../../models/VoteDocument";
-import { downloadFile } from "../../utils/exportingUtils";
+import { groupBy, reorder } from "../../utils/collectionUtils";
+import {
+    downloadFile,
+    downloadJsonFile,
+    exportBoardToJson,
+} from "../../utils/exportingUtils";
 import firebase from "../../utils/firebaseClient";
 import { Column } from "../column/Column";
 import { GradientHeader } from "../shared/GradientHeader";
@@ -136,18 +150,6 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
         }
     };
 
-    const reorder = (
-        list: any[],
-        oldIndex: number,
-        newIndex: number
-    ): any[] => {
-        const result = Array.from(list);
-        const [removed] = result.splice(oldIndex, 1);
-        result.splice(newIndex, 0, removed);
-
-        return result;
-    };
-
     const takeBoardScreenshot = async (): Promise<void> => {
         const canvas = await html2canvas(document.getElementById("board"), {
             allowTaint: true,
@@ -158,6 +160,49 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
         });
 
         canvas.toBlob((blob) => downloadFile(props.board.name, ".png", blob));
+    };
+
+    const exportBoard = async (): Promise<void> => {
+        downloadJsonFile(
+            props.board.name,
+            exportBoardToJson(
+                await query.withConverter(BoardDocumentConverter).get(),
+                await query
+                    .collection("items")
+                    .withConverter(ItemDocumentConverter)
+                    .get(),
+                await query
+                    .collection("columns")
+                    .withConverter(ColumnDocumentConverter)
+                    .get()
+            )
+        );
+    };
+
+    const orderItemsByVotes = async (): Promise<void> => {
+        const itemDocuments = await query
+            .collection("items")
+            .withConverter(ItemDocumentConverter)
+            .get();
+        const items = itemDocuments.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        const groupedItems = groupBy<ItemDocument>(items, "column");
+
+        for (const group in groupedItems) {
+            const orderedItems = groupedItems[group].sort((a, b) =>
+                a.votes < b.votes ? 1 : -1
+            );
+
+            for (let i = 0; i < orderedItems.length; i++) {
+                console.log(orderedItems[i]);
+                await query
+                    .collection("items")
+                    .doc(orderedItems[i].id)
+                    .update({ index: i });
+            }
+        }
     };
 
     return (
@@ -218,14 +263,33 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
                                     justify="space-between"
                                     style={{ marginBottom: "20px" }}
                                 >
-                                    <Tooltip
-                                        title="Take a full board screenshot"
-                                        placement="right"
-                                    >
-                                        <CameraOutlined
-                                            onClick={takeBoardScreenshot}
-                                        />
-                                    </Tooltip>
+                                    <Space>
+                                        <Tooltip
+                                            title="Take a full board screenshot"
+                                            placement="right"
+                                        >
+                                            <CameraOutlined
+                                                onClick={takeBoardScreenshot}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip
+                                            title="Export the board to JSON"
+                                            placement="right"
+                                        >
+                                            <ExportOutlined
+                                                onClick={exportBoard}
+                                            />
+                                        </Tooltip>
+                                        <Tooltip
+                                            title="Order all items by the number of votes"
+                                            placement="right"
+                                        >
+                                            <SortDescendingOutlined
+                                                onClick={orderItemsByVotes}
+                                            />
+                                        </Tooltip>
+                                    </Space>
+
                                     <CurrentUsers boardId={props.id} />
                                     <div />
                                 </Row>

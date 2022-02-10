@@ -3,6 +3,7 @@ import firebase from "firebase/compat";
 import { UserDocument, UserDocumentConverter } from "./UserDocument";
 
 export class ItemDocument {
+    id?: string;
     parentId: string;
     column: string;
     index: number;

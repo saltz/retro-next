@@ -5,6 +5,7 @@ import { ColumnDocument } from "../models/ColumnDocument";
 import { ItemDocument } from "../models/ItemDocument";
 import QueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot;
 import QuerySnapshot = firebase.firestore.QuerySnapshot;
+import DocumentSnapshot = firebase.firestore.DocumentSnapshot;
 
 export const downloadJsonFile = (name: string, data: object): void => {
     const blob = new Blob([JSON.stringify(data)], { type: "text/json" });
@@ -29,7 +30,9 @@ export const downloadFile = (
 };
 
 export const exportBoardToJson = (
-    board: QueryDocumentSnapshot<BoardDocument>,
+    board:
+        | QueryDocumentSnapshot<BoardDocument>
+        | DocumentSnapshot<BoardDocument>,
     itemSnapshot: QuerySnapshot<ItemDocument>,
     columns: QuerySnapshot<ColumnDocument>
 ): object => ({
