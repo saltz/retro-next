@@ -196,7 +196,6 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
             );
 
             for (let i = 0; i < orderedItems.length; i++) {
-                console.log(orderedItems[i]);
                 await query
                     .collection("items")
                     .doc(orderedItems[i].id)
