@@ -15,7 +15,7 @@ const Index: NextPage<IPageProps> = (): JSX.Element => (
                 gradient={"90deg, rgb(112, 88, 255) 35%, rgb(1, 183, 240) 100%"}
                 fontSize="60px"
                 fontWeight={600}
-                style={{ margin: "80px 0 15vh" }}
+                style={{ margin: "80px 0 80px" }}
             />
         </Row>
         <Row justify="center" align="middle">
