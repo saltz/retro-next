@@ -34,22 +34,13 @@ import {
 import firebase from "../../utils/firebaseClient";
 import { Column } from "../column/Column";
 import { GradientHeader } from "../shared/GradientHeader";
+import { BoardContext } from "./BoardContext";
 import { CurrentUsers } from "./CurrentUsers";
 
 interface IProps {
     id: string;
     board: BoardDocument;
 }
-
-interface IVoteContext {
-    currentVotes: VoteDocument[];
-    maximumAmountOfVotes: number;
-}
-
-export const VoteContext = React.createContext<IVoteContext>({
-    currentVotes: [],
-    maximumAmountOfVotes: 0,
-});
 
 export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
     const currentUser = firebase.auth().currentUser;
@@ -206,8 +197,10 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
 
     return (
         <>
-            <VoteContext.Provider
+            <BoardContext.Provider
                 value={{
+                    boardId: props.id,
+                    board: props.board,
                     currentVotes: currentVotes,
                     maximumAmountOfVotes: props.board.maximumVotes,
                 }}
@@ -332,8 +325,6 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
                                                     }}
                                                 >
                                                     <Column
-                                                        boardId={props.id}
-                                                        board={props.board}
                                                         column={column}
                                                         firstColumn={columns[0]}
                                                     />
@@ -346,7 +337,7 @@ export const Board: React.FC<IProps> = (props: IProps): JSX.Element => {
                         </Droppable>
                     </div>
                 </DragDropContext>
-            </VoteContext.Provider>
+            </BoardContext.Provider>
             <style jsx>{`
                 .scroll-container {
                     scrollbar-width: thin;

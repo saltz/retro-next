@@ -21,13 +21,12 @@ import { useCollection, useDocumentData } from "react-firebase-hooks/firestore";
 import { ItemDocument } from "../../models/ItemDocument";
 import { VoteDocument, VoteDocumentConverter } from "../../models/VoteDocument";
 import firebase from "../../utils/firebaseClient";
-import { VoteContext } from "../board/Board";
+import { BoardContext } from "../board/BoardContext";
 import { UserAvatar } from "../shared/UserAvatar";
 import { ItemTextArea } from "./ItemTextArea";
 
 interface IProps {
     id: string;
-    boardId: string;
     item: ItemDocument;
     itemQuery: firebase.firestore.CollectionReference<ItemDocument>;
     child?: boolean;
@@ -38,23 +37,25 @@ interface IProps {
 
 export const ItemCard: React.FC<IProps> = (props: IProps) => {
     const currentUser = firebase.auth().currentUser;
+    const boardContext = useContext(BoardContext);
+
     const voteId: string = `${currentUser.uid}-${props.id}`;
+
     const voteQuery = firebase
         .firestore()
         .collection("boards")
-        .doc(props.boardId)
+        .doc(boardContext.boardId)
         .collection("votes")
         .doc(voteId)
         .withConverter(VoteDocumentConverter);
 
     const [editing, setEditing] = useState<boolean>(false);
     const [currentVote] = useDocumentData<VoteDocument>(voteQuery);
-    const voteContext = useContext(VoteContext);
     const [childrenSnapshot] = useCollection(
         props.itemQuery.where("parentId", "==", props.id ?? null)
     );
 
-    const removeFromParentItem = async (id: string) => {
+    const removeFromParentItem = (id: string) => {
         props.itemQuery.doc(id).update({ parentId: null });
     };
 
@@ -127,10 +128,12 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
     };
 
     const votingDisabled = () =>
-        voteContext.currentVotes?.length >= voteContext.maximumAmountOfVotes &&
-        !voteContext.currentVotes?.find((i) => i.itemId === props.id);
+        boardContext.currentVotes?.length >=
+            boardContext.maximumAmountOfVotes &&
+        !boardContext.currentVotes?.find((i) => i.itemId === props.id);
 
-    const isOwner: boolean = currentUser.uid === props.item.user.uid;
+    const isItemOwner: boolean = currentUser.uid === props.item.user.uid;
+    const isBoardOwner: boolean = currentUser.uid === boardContext.board.owner;
 
     return (
         <>
@@ -156,24 +159,24 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
                                 {props.item.votes > 0 && "+"}
                                 {props.item.votes}
                             </Tag>
-                            {isOwner && (
-                                <>
-                                    <EditOutlined
-                                        className="item-card-edit"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => setEditing(!editing)}
+                            {(isItemOwner || isBoardOwner) && (
+                                <EditOutlined
+                                    className="item-card-edit"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => setEditing(!editing)}
+                                />
+                            )}
+                            {isItemOwner && (
+                                <Popconfirm
+                                    title="Are you sure you want to delete this item?"
+                                    onConfirm={deleteItem}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <DeleteOutlined
+                                        style={{ color: "#df4040" }}
                                     />
-                                    <Popconfirm
-                                        title="Are you sure you want to delete this item?"
-                                        onConfirm={deleteItem}
-                                        okText="Yes"
-                                        cancelText="No"
-                                    >
-                                        <DeleteOutlined
-                                            style={{ color: "#df4040" }}
-                                        />
-                                    </Popconfirm>
-                                </>
+                                </Popconfirm>
                             )}
                         </Space>
                     ) : (
@@ -209,7 +212,6 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
                     childrenSnapshot?.docs?.map((childItem, index) => (
                         <ItemCard
                             id={childItem.id}
-                            boardId={props.boardId}
                             key={index}
                             item={childItem.data()}
                             itemQuery={props.itemQuery}
@@ -221,7 +223,7 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
                         <Tooltip
                             title={
                                 votingDisabled()
-                                    ? `You can no longer vote, you have already voted ${voteContext.maximumAmountOfVotes} times`
+                                    ? `You can no longer vote, you have already voted ${boardContext.maximumAmountOfVotes} times`
                                     : undefined
                             }
                         >

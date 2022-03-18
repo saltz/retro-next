@@ -10,7 +10,6 @@ import { ItemCard } from "./ItemCard";
 
 interface IProps {
     id: string;
-    boardId: string;
     index: number;
     item: ItemDocument;
     itemQuery: firebase.firestore.CollectionReference<ItemDocument>;
@@ -22,7 +21,6 @@ export const Item: React.FC<IProps> = (props: IProps) => (
             <div ref={provider.innerRef} {...provider.draggableProps}>
                 <ItemCard
                     id={props.id}
-                    boardId={props.boardId}
                     item={props.item}
                     itemQuery={props.itemQuery}
                     style={{

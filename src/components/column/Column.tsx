@@ -1,6 +1,6 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Avatar, Card, Col, Popconfirm, Row, Skeleton } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import {
     Draggable,
     DraggableProvided,
@@ -8,34 +8,31 @@ import {
     DroppableProvided,
 } from "react-beautiful-dnd";
 import { useCollection } from "react-firebase-hooks/firestore";
-import {
-    BoardDocument,
-    BoardDocumentConverter,
-} from "../../models/BoardDocument";
+import { BoardDocumentConverter } from "../../models/BoardDocument";
 import {
     ColumnDocument,
     ColumnDocumentConverter,
 } from "../../models/ColumnDocument";
 import { ItemDocument, ItemDocumentConverter } from "../../models/ItemDocument";
 import firebase from "../../utils/firebaseClient";
+import { BoardContext } from "../board/BoardContext";
 import { Item } from "../item/Item";
 import { ItemTextArea } from "../item/ItemTextArea";
 
 interface IProps {
-    boardId: string;
-    board: BoardDocument;
     column: ColumnDocument;
     firstColumn?: ColumnDocument;
 }
 
 export const Column: React.FC<IProps> = (props: IProps) => {
     const currentUser = firebase.auth().currentUser;
+    const boardContext = useContext(BoardContext);
 
     const columnQuery = firebase
         .firestore()
         .collection("boards")
         .withConverter(BoardDocumentConverter)
-        .doc(props.boardId)
+        .doc(boardContext.boardId)
         .collection("columns")
         .withConverter(ColumnDocumentConverter);
 
@@ -43,7 +40,7 @@ export const Column: React.FC<IProps> = (props: IProps) => {
         .firestore()
         .collection("boards")
         .withConverter(BoardDocumentConverter)
-        .doc(props.boardId)
+        .doc(boardContext.boardId)
         .collection("items")
         .withConverter(ItemDocumentConverter);
 
@@ -101,7 +98,7 @@ export const Column: React.FC<IProps> = (props: IProps) => {
                                         >
                                             {props.column.title}
                                         </p>
-                                        {props.board.owner ===
+                                        {boardContext.board.owner ===
                                             currentUser.uid &&
                                             props.column.id !==
                                                 props.firstColumn?.id && (
@@ -159,7 +156,6 @@ export const Column: React.FC<IProps> = (props: IProps) => {
                                                     key={item.id}
                                                     id={item.id}
                                                     index={index}
-                                                    boardId={props.boardId}
                                                     item={item.data()}
                                                     itemQuery={itemQuery}
                                                 />
