@@ -1,5 +1,6 @@
 ### Custom ###
 .env
+src/styles/**/*.css
 
 ### Linting and Formatting ###
 .husky

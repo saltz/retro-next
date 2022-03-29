@@ -205,7 +205,7 @@ export const ItemCard: React.FC<IProps> = (props: IProps) => {
                             margin="30px"
                         />
                     ) : (
-                        <p>{props.item.content}</p>
+                        <p style={{ textAlign: "center" }}>{props.item.content}</p>
                     )}
                 </Row>
                 {childrenSnapshot?.docs?.length > 0 &&

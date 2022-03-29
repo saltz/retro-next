@@ -4,10 +4,10 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "less": "src/styles/compile.sh",
+        "less": "lessc --js --clean-css src/styles/light.less src/styles/light.css && lessc --js --clean-css src/styles/dark.less src/styles/dark.css",
         "prepare": "husky install"
     },
-    "license": "LICENSE.md",
+    "license": "AGPL-3.0-only",
     "dependencies": {
         "@ant-design/icons": "^4.7.0",
         "@hookform/resolvers": "^2.8.5",
