@@ -21,7 +21,7 @@ export const AppLayout: React.FC<IProps> = (props: IProps): JSX.Element => (
             <div className="footer">
                 <span>
                     A simple responsive retrospective app created by
-                    <Link href="https://github.com/saltz"> Dane Naebers </Link>
+                    <Link href="https://dane.naebers.net"> Dane Naebers </Link>
                     view source on{" "}
                     <Link
                         href="https://github.com/saltz/retro-next"
